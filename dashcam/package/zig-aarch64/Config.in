@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ZIG_AARCH64
+	bool "zig-aarch64-target"
+	help
+	  Zig for the AARCH64 target.

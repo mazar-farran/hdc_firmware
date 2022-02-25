@@ -1,0 +1,9 @@
+[Unit]
+Description=Dashcam Boot BIT
+After=rauc.service
+Requires=rauc.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bootbit
+User=root

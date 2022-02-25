@@ -1,0 +1,5 @@
+config BR2_PACKAGE_HELLOZIG
+	bool "hellozig"
+	select BR2_PACKAGE_HOST_ZIG_X86_86
+	help
+	  Test program.

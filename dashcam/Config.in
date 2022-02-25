@@ -1,0 +1,5 @@
+source "$BR2_EXTERNAL_DASHCAM_PATH/package/camera-cpp/Config.in"
+source "$BR2_EXTERNAL_DASHCAM_PATH/package/camera-zig/Config.in"
+source "$BR2_EXTERNAL_DASHCAM_PATH/package/hellozig/Config.in"
+source "$BR2_EXTERNAL_DASHCAM_PATH/package/zig-aarch64/Config.in"
+source "$BR2_EXTERNAL_DASHCAM_PATH/package/zig-x86-64/Config.in.host"
