@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-CAMERA_ZIG_VERSION = 0600b5bf1354d1ed577135641df956fd47df4525
+CAMERA_ZIG_VERSION = dcb08d26b29c6aaa25d2813754b1ad535373a41c
 CAMERA_ZIG_SITE = $(call github,cshaw9-rtr,capable_camera_firmware,$(CAMERA_ZIG_VERSION))
 CAMERA_ZIG_DEPENDENCIES = host-zig-x86-64
 
