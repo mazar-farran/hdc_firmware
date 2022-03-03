@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-CAMERA_ZIG_VERSION = ae1161e8db5c5ecaad04858389ef177558f06294
-CAMERA_ZIG_SITE = $(call github,cshaw9-rtr,capable_camera_firmware,$(CAMERA_ZIG_VERSION))
+CAMERA_ZIG_VERSION = 0600b5bf1354d1ed577135641df956fd47df4525
+CAMERA_ZIG_SITE = $(call github,CapableRobot,capable_camera_firmware,$(CAMERA_ZIG_VERSION))
 CAMERA_ZIG_DEPENDENCIES = host-zig-x86-64
 
 define CAMERA_ZIG_BUILD_CMDS

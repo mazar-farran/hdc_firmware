@@ -1,0 +1,50 @@
+From 733c763145d77a3490c8eac097e0fdb3620ea4cd Mon Sep 17 00:00:00 2001
+From: Chris Shaw <cshaw9@gmail.com>
+Date: Wed, 2 Mar 2022 13:24:57 -0500
+Subject: [PATCH] Fix sprintf error on 32-bit builds.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fixes the following error:
+
+[ 54%] Built target VersionCpp
+net_output.cpp: In member function ‘void NetOutput::outputUnixSocket(void*, size_t, int64_t, uint32_t)’:
+net_output.cpp:156:35: error: format ‘%u’ expects argument of type ‘unsigned int’, but argument 3 has type ‘size_t’ {aka ‘long unsigned int’} [-Werror=format=]
+  156 |  sprintf(header, "PUB frame.jpeg %u\r\n", size);
+      |                                  ~^       ~~~~
+      |                                   |       |
+      |                                   |       size_t {aka long unsigned int}
+      |                                   unsigned int
+      |                                  %lu
+compilation terminated due to -Wfatal-errors.
+cc1plus: all warnings being treated as errors
+---
+ camera/output/net_output.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/camera/output/net_output.cpp b/camera/output/net_output.cpp
+index f693055..89456b4 100755
+--- a/camera/output/net_output.cpp
++++ b/camera/output/net_output.cpp
+@@ -153,7 +153,7 @@ void NetOutput::outputUnixSocket(void *mem, size_t size, int64_t timestamp_us, u
+ 
+ 	// Prepare the header string with topic and number of bytes that follow the line break
+ 	char header[100] = "";
+-	sprintf(header, "PUB frame.jpeg %lu\r\n", size);
++	sprintf(header, "PUB frame.jpeg %lu\r\n", static_cast<unsigned long>(size));
+ 
+ 	// if (options_->verbose)
+ 	// 	std::cerr << "NetOutput: output buffer " << mem << " size " << size << "\n";
+@@ -195,7 +195,7 @@ void NetOutput::outputBuffer(void *mem, size_t size, int64_t timestamp_us, uint3
+ 
+ 	// Prepare the header string with topic and number of bytes that follow the line break
+ 	char header[100] = "";
+-	sprintf(header, "PUB frame.jpeg %lu\r\n", size);
++	sprintf(header, "PUB frame.jpeg %lu\r\n", static_cast<unsigned long>(size));
+ 
+ 	size_t bytes_to_send = std::min(size, max_size - header_length);
+ 	uint8_t *ptr = (uint8_t *)mem;
+-- 
+2.25.1
+
