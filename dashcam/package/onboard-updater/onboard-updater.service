@@ -1,0 +1,11 @@
+[Unit]
+Description=Onboard Updater
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/onboardupdater
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
