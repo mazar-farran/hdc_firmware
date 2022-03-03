@@ -1,5 +1,22 @@
 # dashcam
 
+## Dependencies
+Refer to the Buildroot manual for 
+[required and optional dependencies](https://buildroot.org/downloads/manual/manual.html#requirement).
+
+To add to that:
+
+### Required
+* `git`
+
+### Optional
+* `cmake` - Although Buildroot will build cmake if necessary it optimizes by using the CMake
+on the host system if the version is recent enough.  Using the host CMake can save 5+ minutes
+in rebuild time.
+
+* `qt5` - This is packaged as `qt5-default` on Ubuntu 20.  This allows bringing up a better UI
+interface when running `make xconfig`.
+
 ## Getting Started
 
 1. Clone the top-level dashcam repository with submodules.
@@ -8,7 +25,8 @@
     cd dashcam
     ``` 
 
-2. Setup a target build.  The config files are setup to build both 32-bit and 64-bit images, though the camera SW only supports 32-bit at the moment so that is preferred.
+2. Setup a target build.  The config files are setup to build both 32-bit and 64-bit images, 
+though the camera SW only supports 32-bit at the moment so that is preferred.
     ```
     make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_dashcam_defconfig
     ```
@@ -20,7 +38,9 @@
     make
     ```
 
-4. Install the image on the target using your preferred method.  `images/sdcard.img` is a full disk image suitable for flashing.  For the CM4IO target, to flash you need the pin jumper and a connection to the target's USB flashing port.  The commands I use (use the correct device on your host):
+4. Install the image on the target using your preferred method.  `images/sdcard.img` is a full disk 
+image suitable for flashing.  For the CM4IO target, to flash you need the pin jumper and a 
+connection to the target's USB flashing port.  The commands I use (use the correct device on your host):
     ```
     # I still need sudo even though I'm a member of plugdev.
     sudo host/bin/rpiboot
@@ -30,29 +50,63 @@
     ```
     Remove the jumper and power cycle the target.
 
-5. After flashing the full disk image, changes to the image can use over-the-air updates.  Currently we support a development mode that leaves SSH open to a root user with no password.  A script is provided to perform the update from the host.  Relative to the `output` directory and assuming a target IP address, run:
+5. After flashing the full disk image, changes to the image can use over-the-air updates.  Currently 
+we support a development mode that leaves SSH open to a root user with no password.  A script is 
+provided to perform the update from the host.  Relative to the `output` directory and assuming a 
+target IP address, run:
     ```
     ../scripts/update_ssh.sh 192.168.1.10
     ```
     You should see the update progress in the console and the target will reboot.
 
 ## Working With the Target
+
 ### Getting a Console
-Right now all builds are in development mode, which provides a root user with no password.  You can get a console to the target using one of the following:
-1. Use the virtual terminal.  We run a getty session on TTY1.  Just connect an HDMI monitor and USB keyboard.
-2. Use the GPIO pins.  We run a serial console on UART0 and you can use a USB-to-GPIO cable as discussed [here](https://elinux.org/RPi_Serial_Connection).  You can see the CM4IO pinout [here](https://pi4j.com/1.3/pins/rpi-cm4.html), of which you use pins 6,8,10.
+Right now all builds are in development mode, which provides a root user with no password.  You can 
+get a console to the target using one of the following:
+1. Use the virtual terminal.  We run a getty session on TTY1.  Just connect an HDMI monitor and USB 
+keyboard.
+2. Use the GPIO pins.  We run a serial console on UART0 and you can use a USB-to-GPIO cable as 
+discussed [here](https://elinux.org/RPi_Serial_Connection).  You can see the CM4IO pinout 
+[here](https://pi4j.com/1.3/pins/rpi-cm4.html), of which you use pins 6,8,10.
 3. Use SSH.  You can connect using the root user with no password.
 
 ## Troubleshooting
 
 ### How Do I Find The Target's IP Address?
-The target gets an IP address from the an external DHCP server (which you have to provide if one isn't already on the LAN).  If you have a console, then you can run `ip addr`.    If you don't have a working console, you can search for the target on your subnet using `arp-scan`.  For example, on a `192.168.1.xxx` subnet:
+The target gets an IP address from the an external DHCP server (which you have to provide if one 
+isn't already on the LAN).  If you have a console, then you can run `ip addr`.    If you don't have 
+a working console, you can search for the target on your subnet using `arp-scan`.  For example, on 
+a `192.168.1.xxx` subnet:
 ```
 sudo arp-scan 192.168.1.0/24
 ```
 The target will likely show up as `(Unknown)`.
 
 ### My USB keyboard doesn't work in the virtual console
-Make sure you've unplugged the USB cable from the USB flashing port.  That seems to messup the use of a USB keyboard.
+Make sure you've unplugged the USB cable from the USB flashing port.  That seems to messup the use 
+of a USB keyboard.
 
+## Developing in the Dashcam Project
 
+### Updating the Capable Robot Camera Software
+1. Changes are pulled in from the Capable Robot repo, so changes in the camera software first need to 
+be pushed to the camera repo GitHub.  The change itself doesn't need to be in the main branch,
+it just needs a hash.
+
+2. The hash needs to be modified in the [camera-cpp.mk](./dashcam/package/camera-cpp/camera-cpp.mk)
+file and the [camera-zig.mk](./dashcam/package/camera-zig/camera-zig.mk) files.  Since the camera
+SW has two different build systems in the same tree we build it as two separate projects but
+
+3. From the `output` directory, run `make`.
+
+### Updating the RPi `config.txt` file.
+`config.txt` for each target is modified from the default.  For example, you can find one target
+version [here](./dashcam/board/raspberrypi/config_cm4io.txt).  If you modify that, then from
+the `output` directory:
+```
+rm -rf build/rpi-firmware*
+make
+# After the build finishes you can confirm your changes by:
+cat images/rpi-firmware/config.txt
+```
