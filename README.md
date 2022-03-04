@@ -40,16 +40,15 @@ though the camera SW only supports 32-bit at the moment so that is preferred.
 
 4. Install the image on the target using your preferred method.  `images/sdcard.img` is a full disk 
 image suitable for flashing.  For the CM4IO target, to flash you need the pin jumper and a 
-connection to the target's USB flashing port.  The commands I use (use the correct device on your host):
+connection to the target's USB flashing port.  The commands to install the bootloader,
+flash the device, and resize the final data partition have all been collected into a
+script.  Relative to the `output` directory and assuming the device will mount to `/dev/sda`, run:
     ```
-    # I still need sudo even though I'm a member of plugdev.
-    sudo host/bin/rpiboot
-    # Substitute the correct host device (on my system it is /dev/sda).
-    sudo umount /dev/sdX
-    sudo dd if=images/sdcard.img of=/dev/sda status=progress oflag=direct bs=4M conv=fsync
+    ../scripts/flash_resize_image.sh sda
     ```
-    Remove the jumper and power cycle the target.
-
+    This script has basic safety checks that the target is connected to the given device (e.g. `sda`),
+    and is in fact a Raspberry Pi!
+    
 5. After flashing the full disk image, changes to the image can use over-the-air updates.  Currently 
 we support a development mode that leaves SSH open to a root user with no password.  A script is 
 provided to perform the update from the host.  Relative to the `output` directory and assuming a 
