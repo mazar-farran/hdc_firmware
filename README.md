@@ -73,10 +73,10 @@ discussed [here](https://elinux.org/RPi_Serial_Connection).  You can see the CM4
 ## Troubleshooting
 
 ### How Do I Find The Target's IP Address?
-The target gets an IP address from the an external DHCP server (which you have to provide if one 
-isn't already on the LAN).  If you have a console, then you can run `ip addr`.    If you don't have 
-a working console, you can search for the target on your subnet using `arp-scan`.  For example, on 
-a `192.168.1.xxx` subnet:
+The target gets an IP address on the wired ethernet adapter from the an external DHCP server 
+(which you have to provide if one isn't already on the LAN).  If you have a console, then you 
+can run `ip addr`.  If you don't have a working console, you can search for the target on your 
+subnet using `arp-scan`.  For example, on a `192.168.1.xxx` subnet LAN:
 ```
 sudo arp-scan 192.168.1.0/24
 ```
@@ -85,6 +85,23 @@ The target will likely show up as `(Unknown)`.
 ### My USB keyboard doesn't work in the virtual console
 Make sure you've unplugged the USB cable from the USB flashing port.  That seems to messup the use 
 of a USB keyboard.
+
+### Remote Host Identification Error
+If you are using SSH to the target (like when using the `update_ssh.sh` script) you may get an
+error that starts:
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+```
+This is because the SSH keys have changed on the target and to your host the target at the IP
+address looks like it has changed.  SSH keys for the target are generated on a full rebuild,
+so that's likely why they have changed.
+
+The error message has the solution: run the `ssh-keygen` command with the `-R` option.  For me:
+```
+ssh-keygen -f "/home/cshaw/.ssh/known_hosts" -R "192.168.1.10"
+```
 
 ## Developing in the Dashcam Project
 
