@@ -23,3 +23,6 @@ sed -i '/tmpfs \/var tmpfs/d' ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fsta
 
 # Mount the data partition.  
 echo "LABEL=data /mnt/data ext4 defaults,data=journal,noatime 0 0" >> ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fstab
+
+# Don't let non-root users see the hostapd.conf file since it has password info.
+chmod og-rw ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/hostapd.conf

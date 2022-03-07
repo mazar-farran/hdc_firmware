@@ -37,3 +37,6 @@ install -D -m 0754 ${BR2_EXTERNAL_DASHCAM_PATH}/bootbit/bootbit ${TARGET_DIR}/us
 sed -i "s/PrivateMounts=yes/PrivateMounts=no/g" ${TARGET_DIR}/lib/systemd/system/systemd-udevd.service
 sed -i "s/FS_MOUNTOPTIONS=\"\"/FS_MOUNTOPTIONS=\"-fstype=vfat,gid=users,dmask=0007,fmask=0117\"/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
 sed -i "s/sync,noexec,nodev/noexec,nodev/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
+
+# Deconflict port 53 which dnsmasq is trying to use.  This tells systemd-resolved to not get in the way.
+sed -i "s/#DNSStubListener=yes/DNSStubListener=no/g" ${TARGET_DIR}/etc/systemd/resolved.conf
