@@ -70,11 +70,22 @@ discussed [here](https://elinux.org/RPi_Serial_Connection).  You can see the CM4
 [here](https://pi4j.com/1.3/pins/rpi-cm4.html), of which you use pins 6,8,10.
 3. Use SSH.  You can connect using the root user with no password.
 
+### Networking
+The target uses both wired ethernet and wifi interfaces.
+* On the wired ethernet interface the target is a DHCP client.  The target gets an IP address on the wired 
+ethernet adapter from the an external DHCP server (which you have to provide if one isn't already on the LAN).
+* On the wifi interface the target is an access point.  It sets a static IP address of `192.168.0.10` 
+for itself and runs a DHCP server that assigns addresses in the `192.168.0.[11-50]` range.  The
+wifi SSID is `dashcam` and the password is `hivemapper`.
+
 ## Troubleshooting
 
 ### How Do I Find The Target's IP Address?
-The target gets an IP address on the wired ethernet adapter from the an external DHCP server 
-(which you have to provide if one isn't already on the LAN).  If you have a console, then you 
+If you connect to the target using wifi see the Networking section for the target's static IP address.
+
+
+If you connect using the wired ethernet interface then the target will have an IP address assigned
+by the LAN's DHCP server.  If you have a console session on the target, then you 
 can run `ip addr`.  If you don't have a working console, you can search for the target on your 
 subnet using `arp-scan`.  For example, on a `192.168.1.xxx` subnet LAN:
 ```
