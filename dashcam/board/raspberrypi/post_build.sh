@@ -2,6 +2,10 @@
 
 set -eu
 
+# Copy the custom command line file.  This command line is what is used by the 
+# RPi firmware at the beginning of boot, up until the U-Boot script takes over.
+install -D -m 0644 ${BR2_EXTERNAL_DASHCAM_PATH}/board/raspberrypi/cmdline.txt ${BINARIES_DIR}/rpi-firmware/cmdline.txt
+
 # Copy the public certificates to the target dir.
 install -D -m 0644 ${BR2_EXTERNAL_DASHCAM_PATH}/board/raspberrypi/pki/dev/keyring/cert.pem ${TARGET_DIR}/etc/rauc/keyring/
 

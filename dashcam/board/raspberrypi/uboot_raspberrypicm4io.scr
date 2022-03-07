@@ -1,9 +1,25 @@
+# This script is modified from that provided by the upstream sources:
+# Charles Steinkuehler at the BR2RAUC project:  https://github.com/cdsteinkuehler/br2rauc
+# - GPLv2
+# RAUC project contrib folder:  https://github.com/rauc/rauc/blob/master/contrib/uboot.sh
+# - LGPLv2.1
+
 test -n "${BOOT_ORDER}" || setenv BOOT_ORDER "A B"
 test -n "${BOOT_A_LEFT}" || setenv BOOT_A_LEFT 3
 test -n "${BOOT_B_LEFT}" || setenv BOOT_B_LEFT 3
+
 # Items of note here:
 # - We substitute our own init file to implement an overlay FS.
-test -n "${default_bootargs}" || setenv default_bootargs init=/sbin/overlayroot.sh rootfstype=squashfs coherent_pool=1M vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000 rootwait console=tty1 console=ttyAMA0,115200
+# - tty1 is the virtual terminal (HDMI display and USB keyboard).
+# - ttyAMA0 is the serial console on GPIO pins 6/8/10.
+default_bootargs="init=/sbin/overlayroot.sh rootfstype=squashfs rootwait console=tty1 console=ttyAMA0,115200 coherent_pool=1M vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000"
+
+# RPi firmware uses a dynamic fdt_addr, but U-Boot does not use the fw
+# provided address if fdt_addr is already defined in the environment!
+# Copy fdt_addr to a local variable and delete the environment variable
+# so it never gets accidentally saved:
+rpi_fdt_addr=${fdt_addr}
+env delete fdt_addr
 
 setenv bootargs
 for BOOT_SLOT in "${BOOT_ORDER}"; do
@@ -40,4 +56,4 @@ echo "Loading kernel"
 run load_kernel
 
 echo "Starting kernel"
-bootz ${kernel_addr_r} - ${fdt_addr}
+bootz ${kernel_addr_r} - ${rpi_fdt_addr}

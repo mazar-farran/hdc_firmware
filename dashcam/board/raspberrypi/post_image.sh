@@ -19,7 +19,6 @@ GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 # ${GENIMAGE_TMP}/root so passing TARGET_DIR would be a waste of time and disk
 # space. We don't rely on genimage to build the rootfs image, just to insert a
 # pre-built one in the disk image.
-
 trap 'rm -rf "${ROOTPATH_TMP}"' EXIT
 ROOTPATH_TMP="$(mktemp -d)"
 
