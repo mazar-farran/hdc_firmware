@@ -14,6 +14,8 @@ gpu_mem_512=100
 gpu_mem_1024=100
 
 # fixes rpi (3B, 3B+, 3A+, 4B and Zero W) ttyAMA0 serial console
+# {chris.shaw}
+# Yes, we seem to need this on the CM4IO as well.
 dtoverlay=miniuart-bt
 
 # enable 64bits support
