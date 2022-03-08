@@ -24,8 +24,8 @@ chmod go-rwx \
 rm -f ${TARGET_DIR}/etc/version.json
 cat >> ${TARGET_DIR}/etc/version.json << EOF
 {
-  "branch": "$(git -C ${BR2_EXTERNAL_DASHCAM_PATH} branch --show-current)"
-  "build_date": "$(date)"
+  "branch": "$(git -C ${BR2_EXTERNAL_DASHCAM_PATH} branch --show-current)",
+  "build_date": "$(date)",
   "hash": "$(git -C ${BR2_EXTERNAL_DASHCAM_PATH} rev-parse --short HEAD)"
 }
 EOF
