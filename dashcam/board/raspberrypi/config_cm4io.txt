@@ -18,6 +18,15 @@ gpu_mem_1024=100
 # Yes, we seem to need this on the CM4IO as well.
 dtoverlay=miniuart-bt
 
+dtparam=i2c_arm=on
+dtparam=spi=on
+
+dtoverlay=vc4-fkms-v3d,cma-512
+max_framebuffers=2
+
+dtoverlay=dwc2,dr_mode=host
+dtoverlay=imx477
+
 [cm4]
 # {RPi} 
 # Enable host mode on the 2711 built-in XHCI USB controller.
