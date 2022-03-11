@@ -5,11 +5,13 @@
 
 set -euo pipefail
 
-ERROR_LSBLK_ERROR=1
-ERROR_NO_BLOCK_DEVICES=2
-ERROR_PI_DEVICE_NOT_FOUND=3
-ERROR_RPI_BOOT_NOT_FOUND=4
-ERROR_DISK_IMAGE_NOT_FOUND=5
+ERROR_USAGE=1
+ERROR_OPTIONS=2
+ERROR_LSBLK_ERROR=3
+ERROR_NO_BLOCK_DEVICES=4
+ERROR_PI_DEVICE_NOT_FOUND=5
+ERROR_RPI_BOOT_NOT_FOUND=6
+ERROR_DISK_IMAGE_NOT_FOUND=7
 
 SCRIPT_PATH=`realpath $0`
 SCRIPT_DIR=`dirname $0`
@@ -26,7 +28,7 @@ usage()
   echo ""
   echo "Optional:"
   echo "  -h, --help    Shows usage."
-  exit 1
+  exit ${ERROR_USAGE}
 }
 
 PARSED=`getopt --options=h: --longoptions=help --name "${SCRIPT_NAME}" -- "$@"`
@@ -44,7 +46,7 @@ while true; do
       ;;
     *)
       echo "Programming error"
-      exit 2
+      exit ${ERROR_OPTIONS}
       ;;
   esac
 done
@@ -55,7 +57,7 @@ fi
 
 DEVICE=$1
 
-RPI_BOOT_PATH=$(realpath ${SCRIPT_DIR}/../output/host/bin/rpiboot)
+RPI_BOOT_PATH=$(realpath ${SCRIPT_DIR}/..)/output/host/bin/rpiboot
 if [[ ! -f ${RPI_BOOT_PATH} ]]; then
   echo "Error: ${RPI_BOOT_PATH} not found!"
   exit ${ERROR_RPI_BOOT_NOT_FOUND}

@@ -17,6 +17,10 @@ in rebuild time.
 * `qt5` - This is packaged as `qt5-default` on Ubuntu 20.  This allows bringing up a better UI
 interface when running `make xconfig`.
 
+* `curl` - Necessary to use the `update_http.sh` script.
+
+* `jq` - Necessary to use the `flash_resize_image.sh` and `update_http.sh` scripts.
+
 ## Getting Started
 
 1. Clone the top-level dashcam repository with submodules.
@@ -49,14 +53,22 @@ script.  Relative to the `output` directory and assuming the device will mount t
     This script has basic safety checks that the target is connected to the given device (e.g. `sda`),
     and is in fact a Raspberry Pi!
     
-5. After flashing the full disk image, changes to the image can use over-the-air updates.  Currently 
-we support a development mode that leaves SSH open to a root user with no password.  A script is 
-provided to perform the update from the host.  Relative to the `output` directory and assuming a 
-target IP address, run:
+5. After flashing the full disk image, changes to the image can use over-the-air updates.  
+
+    **The preferred method** for doing updates is the production method using the
+    onboard updater over http.  A script is provided to perform the update from the host.
+    Relative to the `output` directory and assuming a target IP address, run:
+    ```
+    ../scripts/update_http.sh 192.168.1.10
+    ```
+    You should see the update progress in the console and the target will reboot.  When it comes
+    up again it will display the version info of the new image.
+
+    During development, we also support a mode that leaves SSH open to a root user with no
+    password.  A script is also provided for this method:
     ```
     ../scripts/update_ssh.sh 192.168.1.10
     ```
-    You should see the update progress in the console and the target will reboot.
 
 ## Working With the Target
 

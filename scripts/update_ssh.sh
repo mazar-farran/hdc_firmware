@@ -3,13 +3,17 @@
 # Writes a RAUC update bundle to the target, installs it, and reboots.  All 
 # over SSH to the root account, so this is purely for development.
 
+ERROR_USAGE=1
+ERROR_OPTIONS=2
+ERROR_NO_UPDATE_FILE=3
+
 set -euo pipefail
 
 SCRIPT_PATH=`realpath $0`
 SCRIPT_DIR=`dirname $0`
 SCRIPT_NAME=`basename ${SCRIPT_PATH}`
 
-DEFAULT_FILE_PATH=`realpath ${SCRIPT_DIR}/../output/images/update.raucb`
+DEFAULT_FILE_PATH="$(realpath ${SCRIPT_DIR}/..)/output/images/update.raucb"
 FILE_PATH=${DEFAULT_FILE_PATH}
 
 usage()
@@ -22,7 +26,7 @@ usage()
   echo "Optional:"
   echo "  -h, --help    Shows usage."
   echo "  -f, --file    Update file to install. Defaults to ${DEFAULT_FILE_PATH}."
-  exit 1
+  exit ${ERROR_USAGE}
 }
 
 PARSED=`getopt --options=hf: --longoptions=help,file: --name "${SCRIPT_NAME}" -- "$@"`
@@ -44,13 +48,19 @@ while true; do
       ;;
     *)
       echo "Programming error"
-      exit 2
+      exit ${ERROR_OPTIONS}
       ;;
   esac
 done
 
 if [[ $# -ne 1 ]]; then
+  echo "Error: no target_ip given."
   usage
+fi
+
+if [[ ! -f ${FILE_PATH} ]]; then
+  echo "Error: upload file does not exist."
+  exit ${ERROR_NO_UPDATE_FILE}
 fi
 
 TARGET_IP="$1"
