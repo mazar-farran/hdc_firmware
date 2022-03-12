@@ -104,6 +104,13 @@ function get_state()
   echo ${STATE}
 }
 
+function get_rauc_state()
+{
+  local JSON=$(curl -s -X GET http://${TARGET_IP}:8080/status)
+  local STATE=$(echo ${JSON} | jq .rauc_state)
+  echo ${STATE}
+}
+
 function get_last_error()
 {
   local JSON=$(curl -s -X GET http://${TARGET_IP}:8080/status)
@@ -134,7 +141,13 @@ fi
 while true
 do
   STATE=$(get_state)
-  echo "Server state: ${STATE}"
+
+  if [[ ${STATE} == \"rauc_update\" ]]; then
+    RAUC_STATE=$(get_rauc_state)    
+    echo "Server state: ${STATE}; RAUC state: ${RAUC_STATE}"
+  else
+    echo "Server state: ${STATE}"
+  fi
 
   if [[ ${STATE} == \"reboot\" ]]; then
     echo -e "\nUpdate successful, this program will wait for the target to reboot."
