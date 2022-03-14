@@ -126,6 +126,12 @@ The error message has the solution: run the `ssh-keygen` command with the `-R` o
 ssh-keygen -f "/home/cshaw/.ssh/known_hosts" -R "192.168.1.10"
 ```
 
+### Flashing the Target is Stuck "Waiting for BCM2835/6/7/2711..."
+This is the RPi bootloader.  Do the following:
+1. Ensure the pin jumper is installed.
+2. Ensure the USB-C flashing cable is attached.
+3. Power cycle the target.
+
 ## Developing in the Dashcam Project
 
 ### Updating the Capable Robot Camera Software
