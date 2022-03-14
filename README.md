@@ -149,3 +149,9 @@ make
 # After the build finishes you can confirm your changes by:
 cat images/rpi-firmware/config.txt
 ```
+
+## Updating the Firmware
+
+The dashcam provides an HTTP server to manage firmware updates.
+[Refer to the Onboard Updater project](https://github.com/cshaw9-rtr/onboardupdater) for a
+description of the API.  Or use the update script [provided in this project here](./scripts/update_http.sh).

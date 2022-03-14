@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-ONBOARD_UPDATER_VERSION = d72d6be4124ff6844e0fefaee5a7fa83e2c79cfa
+ONBOARD_UPDATER_VERSION = 7b5cf60acde9c68a39cacf3dd762251381a2edf1
 ONBOARD_UPDATER_SITE = $(call github,cshaw9-rtr,onboardupdater,$(ONBOARD_UPDATER_VERSION))
 ONBOARD_UPDATER_DEPENDENCIES = python-transitions
 ONBOARD_UPDATER_SETUP_TYPE = setuptools
