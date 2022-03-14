@@ -9,11 +9,8 @@ CAMERA_ZIG_SITE = $(call github,CapableRobot,capable_camera_firmware,$(CAMERA_ZI
 CAMERA_ZIG_DEPENDENCIES = host-zig-x86-64
 
 define CAMERA_ZIG_BUILD_CMDS
-	(cd $(@D); zig build)
-endef
-
-define CAMERA_ZIG_INSTALL_TARGET_CMDS
-	install -D -m 0755 $(@D)/zig-out/bin/capable_camera_firmware $(TARGET_DIR)/usr/bin
+  # zig installs to a bin directory by default, so that's why we don't prefix to dashcam/bin.
+	zig build install --build-file $(@D)/build.zig --prefix $(TARGET_DIR)/opt/dashcam/
 endef
 
 $(eval $(generic-package))
