@@ -14,3 +14,7 @@ HOSTNAME="dashcam-${SN}"
 echo "${HOSTNAME}" > /etc/hostname
 sed -i "s/dashcam/${HOSTNAME}/g" /etc/hosts
 hostname ${HOSTNAME}
+
+# Finally, make the SSID unique in case we have multiple dashcams in the same
+# area.  This script should be running before the hostapd service starts.
+sed -i "s/ssid=dashcam/ssid=${HOSTNAME}/g" /etc/hostapd.conf
