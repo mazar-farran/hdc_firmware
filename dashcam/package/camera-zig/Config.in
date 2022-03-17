@@ -1,5 +1,0 @@
-config BR2_PACKAGE_CAMERA_ZIG
-	bool "camera-zig"
-	select BR2_PACKAGE_HOST_ZIG_X86_86
-	help
-	  The Zig portion of the Capable camera firmware.
