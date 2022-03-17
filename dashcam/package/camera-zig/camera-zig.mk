@@ -13,4 +13,9 @@ define CAMERA_ZIG_BUILD_CMDS
 	zig build install --build-file $(@D)/build.zig --prefix $(TARGET_DIR)/opt/dashcam/
 endef
 
+define CAMERA_ZIG_INSTALL_INIT_SYSTEMD
+	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-zig/camera-zig.service \
+		$(TARGET_DIR)/usr/lib/systemd/system/camera-zig.service
+endef
+
 $(eval $(generic-package))
