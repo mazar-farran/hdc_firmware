@@ -6,9 +6,6 @@
 mkdir -p ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/systemd/system/getty.target.wants/
 ln -sf /usr/lib/systemd/system/getty@.service ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/systemd/system/getty.target.wants/getty@tty1.service
   
-# Make sure the boot built-in-test runs on start.
-ln -sf /etc/systemd/system/bootbit.service ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/systemd/system/multi-user.target.wants/bootbit.service
-
 # Remove the tmpfs on /var.  We're already overlaying an entire tmpfs over the RO
 # root so this is redundant.  But more than that, having an entry for /var screws
 # things up when:
