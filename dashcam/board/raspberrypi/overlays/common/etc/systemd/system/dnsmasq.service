@@ -9,6 +9,7 @@ After=network.target
 Type=simple
 PIDFile=/run/dnsmasq.pid
 ExecStart=/sbin/dnsmasq
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
