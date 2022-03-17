@@ -13,10 +13,14 @@ ERROR_NO_UPDATE_FILE=7
 ERROR_UPDATE_FAILED=8
 ERROR_UPDATE_TIMEOUT=9
 ERROR_REBOOT_TIMEOUT=10
+ERROR_NO_CONNECTION=11
 
-TIMEOUT_UPDATE_S=20
-TIMEOUT_REBOOT_S=50
+TIMEOUT_UPDATE_S=30
+# Use a long reboot time in case connecting over wifi.  Wifi on the target is the last thing to
+# come up and then the host wifi needs to detect it and connect to it.
+TIMEOUT_REBOOT_S=70
 REBOOT_SLEEP_TIME_S=30
+TIMEOUT_CONNECTION_S=0.1
 
 # Test for curl dependency.
 curl --version > /dev/null 2>&1
@@ -92,28 +96,39 @@ if [[ ! -f ${FILE_PATH} ]]; then
 fi
 
 # Test for connectivity.
-CODE=$(curl -s -o /dev/null -w "%{http_code}" -X GET http://${TARGET_IP}:8080/status)
-if [[ ${CODE} -ne 200 ]]; then
-  echo "Error: unable to get status from server."
+CODE=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -o /dev/null -w "%{http_code}" -X GET http://${TARGET_IP}:8080/status)
+if [[ $? -ne 0 || ${CODE} -ne 200 ]]; then
+  echo "Error: unable to get status from target."
+  echo "Ensure you are connected to the target on IP of ${TARGET_IP}."
+  exit ${ERROR_NO_CONNECTION}
 fi
 
 function get_state()
 {
-  local JSON=$(curl -s -X GET http://${TARGET_IP}:8080/status)
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  if [[ $? -ne 0 ]]; then
+    echo ""
+  fi
   local STATE=$(echo ${JSON} | jq .state)
   echo ${STATE}
 }
 
 function get_rauc_state()
 {
-  local JSON=$(curl -s -X GET http://${TARGET_IP}:8080/status)
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  if [[ $? -ne 0 ]]; then
+    echo ""
+  fi
   local STATE=$(echo ${JSON} | jq .rauc_state)
   echo ${STATE}
 }
 
 function get_last_error()
 {
-  local JSON=$(curl -s -X GET http://${TARGET_IP}:8080/status)
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  if [[ $? -ne 0 ]]; then
+    echo ""
+  fi
   local LAST_ERROR=$(echo ${JSON} | jq .last_error)
   echo ${LAST_ERROR}
 }
@@ -124,17 +139,22 @@ function get_time_s()
 }
 
 STATE=$(get_state) 
-echo "Server state: ${STATE}"
+echo "Target state: ${STATE}"
 if [[ ${STATE} != \"ready\" && ${STATE} != \"failed\" ]]; then
-  echo "Error: server must be in ready or failed state."
+  echo "Error: target must be in ready or failed state."
   exit ${ERROR_BAD_STATE}
 fi
 
 UPDATE_START_TIME_S=$(get_time_s)
 echo -e "\nPosting update..."
-CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST --data-binary @${FILE_PATH} http://${TARGET_IP}:8080/update)
+CODE=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -o /dev/null -w "%{http_code}" -X POST --data-binary @${FILE_PATH} http://${TARGET_IP}:8080/update)
+if [[ $? -ne 0 ]]; then
+  echo "Error: bad post to target."
+  exit ${ERROR_BAD_POST}
+fi
+
 if [[ ${CODE} -ne 200 ]]; then
-  echo "Error: got error status code (${CODE}) from server."
+  echo "Error: got error status code (${CODE}) from target."
   exit ${ERROR_BAD_POST}
 fi
 
@@ -144,9 +164,9 @@ do
 
   if [[ ${STATE} == \"rauc_update\" ]]; then
     RAUC_STATE=$(get_rauc_state)    
-    echo "Server state: ${STATE}; RAUC state: ${RAUC_STATE}"
+    echo "Target state: ${STATE}; RAUC state: ${RAUC_STATE}"
   else
-    echo "Server state: ${STATE}"
+    echo "Target state: ${STATE}"
   fi
 
   if [[ ${STATE} == \"reboot\" ]]; then
@@ -186,10 +206,11 @@ done
 
 echo -e "\n"
 
+echo "Attempting to reconnect to target; if using wifi you may need to connect to the access point."
 while true
 do
   STATE=$(get_state)
-  echo "Server state: ${STATE}"
+  echo "Target state: ${STATE}"
 
   if [[ ${STATE} == \"ready\" ]]; then
     echo -e "Target back online."
@@ -202,7 +223,7 @@ do
     exit ${ERROR_REBOOT_TIMEOUT}
   fi
 
-  sleep 1
+  sleep 2
 done
 
 echo -e "Querying version information:"
