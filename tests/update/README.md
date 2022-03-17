@@ -1,4 +1,4 @@
-# tests/endurance
+# tests/update
 
 This is used to perform a large number of updates to a target.  It creates three
 versions of an update bundle and then iteratively updates the target.
