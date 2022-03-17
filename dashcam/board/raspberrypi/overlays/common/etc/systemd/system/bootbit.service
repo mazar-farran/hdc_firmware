@@ -1,10 +1,11 @@
 [Unit]
 Description=Dashcam Boot BIT
 After=rauc.service
+After=onboard-updater.serveice
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/bootbit
+ExecStart=/opt/dashcam/bin/bootbit.sh
 
 [Install]
 WantedBy=multi-user.target
