@@ -2,30 +2,43 @@
 
 set -eu
 
+# The only way in Buildroot we can figure out what board we are working with is by
+# having the path of this script route through the symlinked board directories, and
+# then pulling the directory name out of the path.  So BOARD_NAME in that case
+# may be "raspberrypicm4io_64" for example.
 BOARD_DIR="$(dirname $0)"
 BOARD_NAME="$(basename ${BOARD_DIR})"
+
+GENIMAGE_FILE="genimage.cfg"
+UBOOT_FILE="uboot.scr"
+
+WORK_DIR=$(mktemp -d)
+trap 'rm -rf "${WORK_DIR}"' EXIT
+
+cp ${BOARD_DIR}/${GENIMAGE_FILE} ${WORK_DIR}
+cp ${BOARD_DIR}/${UBOOT_FILE} ${WORK_DIR}
+
+# In 64-bit the kernel file is called Image, not zImage.  Also booting the kernel from U-Boot
+# uses booti instead of bootz.
+if [[ ${BOARD_NAME} == "raspberrypicm4io_64" ]]; then
+	sed -i "s/\"zImage\"/\"Image\"/g" ${WORK_DIR}/${GENIMAGE_FILE}
+	sed -i "s/zImage/Image/g" ${WORK_DIR}/${UBOOT_FILE}
+	sed -i "s/bootz/booti/g" ${WORK_DIR}/${UBOOT_FILE}
+fi
 
 # The buildroot method for creating a U-Boot script from a source seems to
 # produce a binary SCR file and doesn't run.  So easy enough for us to do it.
 mkimage -A arm -O linux -T script -C none \
-  -n "${BR2_EXTERNAL_DASHCAM_PATH}/board/raspberrypi/uboot_${BOARD_NAME}.scr" \
-  -d "${BR2_EXTERNAL_DASHCAM_PATH}/board/raspberrypi/uboot_${BOARD_NAME}.scr" \
+  -n "${WORK_DIR}/${UBOOT_FILE}" \
+  -d "${WORK_DIR}/${UBOOT_FILE}" \
   "${BINARIES_DIR}/boot.scr.uimg"
 
-GENIMAGE_CFG="${BOARD_DIR}/genimage_${BOARD_NAME}.cfg"
+GENIMAGE_CFG="${WORK_DIR}/${GENIMAGE_FILE}"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
-
-# Pass an empty rootpath. genimage makes a full copy of the given rootpath to
-# ${GENIMAGE_TMP}/root so passing TARGET_DIR would be a waste of time and disk
-# space. We don't rely on genimage to build the rootfs image, just to insert a
-# pre-built one in the disk image.
-trap 'rm -rf "${ROOTPATH_TMP}"' EXIT
-ROOTPATH_TMP="$(mktemp -d)"
-
 rm -rf "${GENIMAGE_TMP}"
 
 genimage \
-	--rootpath "${ROOTPATH_TMP}"   \
+	--rootpath "${WORK_DIR}"   \
 	--tmppath "${GENIMAGE_TMP}"    \
 	--inputpath "${BINARIES_DIR}"  \
 	--outputpath "${BINARIES_DIR}" \
