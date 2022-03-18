@@ -29,12 +29,13 @@ interface when running `make xconfig`.
     cd dashcam
     ``` 
 
-2. Setup a target build.  The config files are setup to build both 32-bit and 64-bit images, 
-though the camera SW only supports 32-bit at the moment so that is preferred.
+2. Setup a target build.  The config files are setup to build both 32-bit and 64-bit images,
+though the camera SW only supports 32-bit at the moment so that is preferred.  We also distinguish
+between production and development builds.  See section below, but
+`raspberrypicm4io_prod_dashcam_defconfig` should be considered the default option.
     ```
-    make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_dashcam_defconfig
+    make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_prod_dashcam_defconfig
     ```
-    Alternately use `raspberrypicm4io_64_dashcam_defconfig` for the 64-bit build.
 
 3. Perform the build.  With no ccache a rebuild should take about 30-40 minutes.
     ```
@@ -90,11 +91,28 @@ ethernet adapter from the an external DHCP server (which you have to provide if 
 for itself and runs a DHCP server that assigns addresses in the `192.168.0.[11-50]` range.  The
 wifi SSID is `dashcam` and the password is `hivemapper`.
 
+## Build Configurations
+Build configuration is driven purely by the `_defconfig` chosen when using the `make` command.
+The options are:
+* raspberrypicm4io_prod_dashcam_defconfig
+* raspberrypicm4io_dev_dashcam_defconfig
+* raspberrypicm4io_64_prod_dashcam_defconfig
+* raspberrypicm4io_64_dev_dashcam_defconfig
+
+### Production vs Development
+Development mode enables some extra features in the O/S:
+* A root login with no password.
+* SSH access (again with a root user and no password).
+* A virtual terminal.
+* A serial console on UART0.
+
+When switching between production and development modes it is highly recommended you execute a
+`make clean` in order to force a full rebuild.
+
 ## Troubleshooting
 
 ### How Do I Find The Target's IP Address?
 If you connect to the target using wifi see the Networking section for the target's static IP address.
-
 
 If you connect using the wired ethernet interface then the target will have an IP address assigned
 by the LAN's DHCP server.  If you have a console session on the target, then you 
