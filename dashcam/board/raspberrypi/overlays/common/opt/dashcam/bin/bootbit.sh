@@ -7,59 +7,73 @@
 # that does not have accurate time and may have a clock jump if NTP sync kicks in.
 # So I'm going to use loops with a number of iterations and 1 second sleeps, so 
 # the number of iterations approximates amount of time the loop may run.
+# 
+# Right now a failure exits with a non-zero code.  We can leave it up to the systemd
+# configuration to decide how to handle that.
+#
+# Print echoes get written to systemd/journald.  View using either:
+# journalctl [OPTIONS]
+# systemctl status bootbit
 
-# Prints to the dmesg log for debugging purposes.
-print_debug() {
-  echo -e "(bootbit) | $1" >/dev/kmsg
+print_info() {
+  echo -e "$1" | systemd-cat -p info -t bootbit
+}
+
+print_error() {
+  echo -e "$1" | systemd-cat -p emerg -t bootbit
+}
+
+fail() {
+  print_error "BIT failed: $1"
+  exit 1
 }
 
 # Gets a process ID given a greppable string.
 get_proc_id() {
   local PID
+  # The Busybox version of ps is pretty limited and we don't have pgrep.  The args
+  # column is the richest and gives the full path of the process.  But that isn't
+  # great because we'll also have the "grep" command show up in the result.  So
+  # used the "comm" column but beware since that truncates the process name if
+  # it is too long.
   PID=$(ps -o pid,comm | grep "$1" | awk '{print $1}')
   echo "${PID}"
 }
 
 # Checks process IDs for equivalence and reboots if they don't match.
 check_proc_ids() {
-  if [ "$1" != "$2" ]; then
-    print_debug "BIT failed: $3 PIDs do not match"
-    # TODO(chris.shaw): make this a reboot.
-    exit 1
-  fi
+  [ "$1" != "$2" ] && fail "$3 PIDs do not match; $1, $2"
 }
 
+# Note we're going to search for these using the "comm" column of ps which
+# truncates the process name to 15 chars.
 OU_PROC="onboardupdater"
 RAUC_PROC="rauc"
+CCF_PROC="capable_camera_"
 
 OU_PID=
 RAUC_PID=
+CCF_PID=
 
 # This first loop tries to identify the PIDs of processes we are interested in.
 ITER=0
 NUM_ITERS=20
 while true; do
-  if [ -z "${OU_PID}" ]; then
-    OU_PID=$(get_proc_id "${OU_PROC}")
-  fi
-
-  if [ -z "${RAUC_PID}" ]; then
-    RAUC_PID=$(get_proc_id "${RAUC_PROC}")
-  fi
-
+  [ -z "${OU_PID}" ] && OU_PID=$(get_proc_id "${OU_PROC}")
+  [ -z "${RAUC_PID}" ] && RAUC_PID=$(get_proc_id "${RAUC_PROC}")
+  [ -z "${CCF_PID}" ] && CCF_PID=$(get_proc_id "${CCF_PROC}")
+  
   if [ -n "${OU_PID}" ] &&
-    [ -n "${RAUC_PID}" ]; then
+    [ -n "${RAUC_PID}" ] &&
+    [ -n "${CCF_PID}" ]
+  then
     # If we've found all the processes we're looking for we can kick out early.
     break
   fi
 
   ITER=$((ITER + 1))
 
-  if [ ${ITER} -ge ${NUM_ITERS} ]; then
-    print_debug "BIT failed: unable to find all processes."
-    # TODO(chris.shaw): make this a reboot.
-    exit 1
-  fi
+  [ ${ITER} -ge ${NUM_ITERS} ] && fail "unable to find all processes"
 
   sleep 1
 done
@@ -70,32 +84,36 @@ sleep 5
 
 NEW_OU_PID=$(get_proc_id "${OU_PROC}")
 NEW_RAUC_PID=$(get_proc_id "${RAUC_PROC}")
+NEW_CCF_PID=$(get_proc_id "${CCF_PROC}")
 
 check_proc_ids "${OU_PID}" "${NEW_OU_PID}" "${OU_PROC}"
 check_proc_ids "${RAUC_PID}" "${NEW_RAUC_PID}" "${RAUC_PROC}"
+check_proc_ids "${CCF_PID}" "${NEW_CCF_PID}" "${CCF_PROC}"
 
+# We should probably pull the expected address from dhcpcd.conf.
+WIFI_IP=192.168.0.10
 # The wlan0 interface is the last thing to come up.  So we'll give it a bit more time.
 ITER=0
 NUM_ITERS=10
 while true; do
-  # TODO(chris.shaw): there may be a better way of testing this.  At least we could pull the expected
-  # address from dhcpcd.conf.
-  ip addr show wlan0 | grep 192.168.0.10 >/dev/null 2>&1
-  if [ "$?" -eq 0 ]; then
-    # Found it.  Kick out early.
-    break
-  fi
+  # TODO(chris.shaw): there may be a better way of testing this.  
+  ip addr show wlan0 | grep ${WIFI_IP} > /dev/null 2>&1
+  [ "$?" -eq 0 ] && break
 
   ITER=$((ITER + 1))
 
-  if [ ${ITER} -ge ${NUM_ITERS} ]; then
-    print_debug "BIT failed: wlan0 is not up with expected IP address."
-    # TODO(chris.shaw): make this a reboot.
-    exit 1
-  fi
+  [ ${ITER} -ge ${NUM_ITERS} ] && fail "wlan0 is not up with expected IP address"
 
   sleep 1
 done
+
+# Test the onboard updater is answering requests on the wifi interface.
+wget http://192.168.0.10:8080/status --spider > /dev/null 2>&1
+[ "$?" -ne 0 ] && fail "cannot get status from onboard updater"
+
+# Test that the persistent data partition is mounted.
+cat /proc/mounts | grep /mnt/data > /dev/null 2>&1
+[ "$?" -ne 0 ] && fail "data partition not mounted"
 
 # This is the positive exit condition.
 rauc status mark-good

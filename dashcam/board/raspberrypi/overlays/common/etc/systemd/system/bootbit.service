@@ -1,7 +1,7 @@
 [Unit]
 Description=Dashcam Boot BIT
 After=rauc.service
-After=onboard-updater.serveice
+After=onboard-updater.service
 
 [Service]
 Type=simple
