@@ -13,7 +13,7 @@ IS_DEV=0
 BUILD_TYPE="prod"
 if [[ ${BOARD_NAME} = *_dev ]]
 then
-	IS_DEV=1
+  IS_DEV=1
   BUILD_TYPE="dev"
 fi
 

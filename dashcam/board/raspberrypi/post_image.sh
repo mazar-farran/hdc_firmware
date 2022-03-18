@@ -12,13 +12,13 @@ BOARD_NAME="$(basename ${BOARD_DIR})"
 IS_64=0
 if [[ ${BOARD_NAME} = *_64_* ]]
 then
-	IS_64=1
+  IS_64=1
 fi
 
 IS_DEV=0
 if [[ ${BOARD_NAME} = *_dev ]]
 then
-	IS_DEV=1
+  IS_DEV=1
 fi
 
 GENIMAGE_FILE="genimage.cfg"
@@ -33,16 +33,16 @@ cp ${BOARD_DIR}/${UBOOT_FILE} ${WORK_DIR}
 # In 64-bit the kernel file is called Image, not zImage.  Also booting the kernel from U-Boot
 # uses booti instead of bootz.
 if [[ ${IS_64} -ne 0 ]]; then
-	sed -i "s/\"zImage\"/\"Image\"/g" ${WORK_DIR}/${GENIMAGE_FILE}
-	sed -i "s/zImage/Image/g" ${WORK_DIR}/${UBOOT_FILE}
-	sed -i "s/bootz/booti/g" ${WORK_DIR}/${UBOOT_FILE}
+  sed -i "s/\"zImage\"/\"Image\"/g" ${WORK_DIR}/${GENIMAGE_FILE}
+  sed -i "s/zImage/Image/g" ${WORK_DIR}/${UBOOT_FILE}
+  sed -i "s/bootz/booti/g" ${WORK_DIR}/${UBOOT_FILE}
 fi
 
 # In production we don't run a console on the TTY so remove it from the kernel
 # boot arguments.  Don't try to remove the UART0 console since if we do that that
 # seems to open the TTY again.  Weird.
 if [[ ${IS_DEV} -eq 0 ]]; then
-	sed -i "s/console=tty1 //g" ${WORK_DIR}/${UBOOT_FILE}
+  sed -i "s/console=tty1 //g" ${WORK_DIR}/${UBOOT_FILE}
 fi
 
 # The buildroot method for creating a U-Boot script from a source seems to
@@ -96,5 +96,5 @@ ${HOST_DIR}/bin/rauc bundle \
 	
 echo -e "\nBuild complete."
 if [[ ${IS_DEV} -ne 0 ]]; then
-	echo -e "\nWarning: this is a DEVELOPMENT build and not suitable for production!"
+  echo -e "\nWarning: this is a DEVELOPMENT build and not suitable for production!"
 fi

@@ -10,7 +10,7 @@ BOARD_NAME="$(basename ${BOARD_DIR})"
 IS_DEV=0
 if [[ ${BOARD_NAME} = *_dev ]]
 then
-	IS_DEV=1
+  IS_DEV=1
 fi
   
 # Remove the tmpfs on /var.  We're already overlaying an entire tmpfs over the RO
