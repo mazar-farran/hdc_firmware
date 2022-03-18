@@ -32,9 +32,10 @@ interface when running `make xconfig`.
 2. Setup a target build.  The config files are setup to build both 32-bit and 64-bit images,
 though the camera SW only supports 32-bit at the moment so that is preferred.  We also distinguish
 between production and development builds.  See section below, but
-`raspberrypicm4io_prod_dashcam_defconfig` should be considered the default option.
+`raspberrypicm4io_dev_dashcam_defconfig` should be considered the default option for developers
+and `raspberrypicm4io_prod_dashcam_defconfig` for production use.
     ```
-    make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_prod_dashcam_defconfig
+    make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_dev_dashcam_defconfig
     ```
 
 3. Perform the build.  With no ccache a rebuild should take about 30-40 minutes.
