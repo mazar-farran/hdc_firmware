@@ -27,6 +27,10 @@ max_framebuffers=2
 dtoverlay=dwc2,dr_mode=host
 dtoverlay=imx477
 
+# Enables the hardware watchdog that will reboot the system after 15 seconds
+# in case of a kernel panic.
+dtparam=watchdog=on
+
 # enable 64bits support
 arm_64bit=1
 
