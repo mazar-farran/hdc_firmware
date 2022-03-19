@@ -41,6 +41,10 @@ sed -i "s/sync,noexec,nodev/noexec,nodev/g" ${TARGET_DIR}/etc/usbmount/usbmount.
 # Deconflict port 53 which dnsmasq is trying to use.  This tells systemd-resolved to not get in the way.
 sed -i "s/#DNSStubListener=yes/DNSStubListener=no/g" ${TARGET_DIR}/etc/systemd/resolved.conf
 
+# The dhcpcd service file has the wrong PID file location.  Running dhcpcd -P on the target gives
+# the correct location.
+sed -i "s/PIDFile=\/run\/dhcpcd.pid/PIDFile=\/var\/run\/dhcpcd\/pid/g" ${TARGET_DIR}/usr/lib/systemd/system/dhcpcd.service
+
 if [[ ${IS_DEV} -ne 0 ]]; then
   # If we haven't generated SSH keys for the target yet do so now.  If they're
   # already there this won't overwrite them.
