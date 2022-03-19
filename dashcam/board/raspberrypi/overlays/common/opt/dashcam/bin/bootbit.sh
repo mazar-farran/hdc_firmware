@@ -14,12 +14,14 @@
 # Print echoes get written to systemd/journald.  View using either:
 # journalctl [OPTIONS]
 # systemctl status bootbit
+# Additionally, errors get routed to the kernel log (i.e. dmesg).
 
 print_info() {
   echo -e "$1" | systemd-cat -p info -t bootbit
 }
 
 print_error() {
+  echo -e "$1" > /dev/kmsg
   echo -e "$1" | systemd-cat -p emerg -t bootbit
 }
 
@@ -50,10 +52,12 @@ check_proc_ids() {
 OU_PROC="onboardupdater"
 RAUC_PROC="rauc"
 CCF_PROC="capable_camera_"
+BRIDGE_PROC="libcamera-bri"
 
 OU_PID=
 RAUC_PID=
 CCF_PID=
+BRIDGE_PID=
 
 # This first loop tries to identify the PIDs of processes we are interested in.
 ITER=0
@@ -62,10 +66,15 @@ while true; do
   [ -z "${OU_PID}" ] && OU_PID=$(get_proc_id "${OU_PROC}")
   [ -z "${RAUC_PID}" ] && RAUC_PID=$(get_proc_id "${RAUC_PROC}")
   [ -z "${CCF_PID}" ] && CCF_PID=$(get_proc_id "${CCF_PROC}")
+  [ -z "${BRIDGE_PID}" ] && BRIDGE_PID=$(get_proc_id "${BRIDGE_PROC}")
   
+  # The libcamera-bridge process is not at the point where we can run it
+  # without erroring.  So don't make it part of our checks... yet.
+  # TODO(chris.shaw): fix libcamera-bridge startup.
   if [ -n "${OU_PID}" ] &&
     [ -n "${RAUC_PID}" ] &&
-    [ -n "${CCF_PID}" ]
+    [ -n "${CCF_PID}" ] #&&
+    # [ -n "${BRIDGE_PID}" ]
   then
     # If we've found all the processes we're looking for we can kick out early.
     break
@@ -85,10 +94,16 @@ sleep 5
 NEW_OU_PID=$(get_proc_id "${OU_PROC}")
 NEW_RAUC_PID=$(get_proc_id "${RAUC_PROC}")
 NEW_CCF_PID=$(get_proc_id "${CCF_PROC}")
+NEW_BRIDGE_PID=$(get_proc_id "${BRIDGE_PROC}")
 
 check_proc_ids "${OU_PID}" "${NEW_OU_PID}" "${OU_PROC}"
 check_proc_ids "${RAUC_PID}" "${NEW_RAUC_PID}" "${RAUC_PROC}"
 check_proc_ids "${CCF_PID}" "${NEW_CCF_PID}" "${CCF_PROC}"
+
+# The libcamera-bridge process is not at the point where we can run it
+# without erroring.  So don't make it part of our checks... yet.
+# TODO(chris.shaw): fix libcamera-bridge startup.
+#check_proc_ids "${BRIDGE_PID}" "${NEW_BRIDGE_PID}" "${BRIDGE_PROC}"
 
 # We should probably pull the expected address from dhcpcd.conf.
 WIFI_IP=192.168.0.10
