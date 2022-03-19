@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -eu
 
@@ -11,8 +11,7 @@ BOARD_NAME="$(basename ${BOARD_DIR})"
 
 IS_DEV=0
 BUILD_TYPE="prod"
-if [[ ${BOARD_NAME} = *_dev ]]
-then
+if [[ ${BOARD_NAME} = *_dev ]]; then
   IS_DEV=1
   BUILD_TYPE="dev"
 fi
@@ -25,8 +24,7 @@ install -D -m 0644 ${BR2_EXTERNAL_DASHCAM_PATH}/board/raspberrypi/cmdline.txt ${
 install -D -m 0644 ${BR2_EXTERNAL_DASHCAM_PATH}/board/raspberrypi/pki/dev/keyring/cert.pem ${TARGET_DIR}/etc/rauc/keyring/
 
 # Populate version info.
-rm -f ${TARGET_DIR}/etc/version.json
-cat >> ${TARGET_DIR}/etc/version.json << EOF
+cat > ${TARGET_DIR}/etc/version.json <<EOF
 {
   "branch": "$(git -C ${BR2_EXTERNAL_DASHCAM_PATH} branch --show-current)",
   "build_date": "$(date)",
@@ -54,4 +52,6 @@ if [[ ${IS_DEV} -ne 0 ]]; then
     ${TARGET_DIR}/etc/ssh/ssh_host_ecdsa_key \
     ${TARGET_DIR}/etc/ssh/ssh_host_ed25519_key \
     ${TARGET_DIR}/etc/ssh/ssh_host_rsa_key
+else
+  rm -rf ${TARGET_DIR}/etc/ssh
 fi

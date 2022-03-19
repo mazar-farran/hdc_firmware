@@ -10,16 +10,10 @@ BOARD_DIR="$(dirname $0)"
 BOARD_NAME="$(basename ${BOARD_DIR})"
 
 IS_64=0
-if [[ ${BOARD_NAME} = *_64_* ]]
-then
-  IS_64=1
-fi
+[[ ${BOARD_NAME} = *_64_* ]] && IS_64=1
 
 IS_DEV=0
-if [[ ${BOARD_NAME} = *_dev ]]
-then
-  IS_DEV=1
-fi
+[[ ${BOARD_NAME} = *_dev ]] && IS_DEV=1
 
 GENIMAGE_FILE="genimage.cfg"
 UBOOT_FILE="uboot.scr"
