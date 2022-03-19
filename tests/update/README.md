@@ -26,3 +26,43 @@ versions of an update bundle and then iteratively updates the target.
     ```
     ./update.py -t <IP_ADDRESS> -n <NUM_UPDATES>
     ```
+
+After doing the three builds of the update software it will continuously perform updates.  You should
+see something like:
+```
+----- Test iteration 94 -----
+Current slot versions: [2, 0]
+Updating slot 0 using version 1.
+Finished posting update.
+Power cycling after 4.14 seconds.
+Test iteration 94 successful.
+----- Test iteration 95 -----
+Current slot versions: [2, 0]
+Updating slot 0 using version 1.
+Finished posting update.
+Power cycling after 7.37 seconds.
+Test iteration 95 successful.
+----- Test iteration 96 -----
+Current slot versions: [2, 0]
+Updating slot 0 using version 1.
+Finished posting update.
+Test iteration 96 successful.
+```
+
+## Useful Options
+If you've already run the script and generated the three update bundles you can save time on
+subsequent runs by using the `-w` option and specifying the directory that contains the three
+update bundles.
+
+## Power Cycling
+
+This test allows for power cycling the target during the update, on a random basic of occurence
+and a random time in the update that the power cycle should be performed.  The actual power cycle
+command can be passed to the `update.py` script, but likely should just be an executable shell
+script.
+
+The software default is to call the [power_cycle.sh](./power_cycle.sh) script, which uses a
+["Control by Web"](https://www.controlbyweb.com/webrelay/) relay on a 192.168.1.X subnet.
+
+Note that power cycles are not performed on the first two updates since those need to complete in
+order for both slots on the target to be populated with known versions of the software.

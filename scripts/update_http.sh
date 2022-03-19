@@ -2,6 +2,10 @@
 #
 # Writes a RAUC update bundle to the target, installs it, and reboots,
 # using the production HTTP interface.
+#
+# Dependencies:
+# - curl
+# - jq
 
 ERROR_USAGE=1
 ERROR_OPTIONS=2
