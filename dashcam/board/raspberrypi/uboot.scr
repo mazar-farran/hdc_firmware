@@ -7,6 +7,9 @@
 test -n "${BOOT_ORDER}" || setenv BOOT_ORDER "A B"
 test -n "${BOOT_A_LEFT}" || setenv BOOT_A_LEFT 3
 test -n "${BOOT_B_LEFT}" || setenv BOOT_B_LEFT 3
+# This ensures that the bootbit will treat the factory install as an update
+# and potentially apply stricter tests.
+test -n "${UNBOOTED_UPDATE}" || setenv UNBOOTED_UPDATE 1
 
 # Items of note here:
 # - We substitute our own init file to implement an overlay FS.

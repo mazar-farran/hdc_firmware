@@ -130,5 +130,8 @@ wget http://192.168.0.10:8080/status --spider > /dev/null 2>&1
 cat /proc/mounts | grep /mnt/data > /dev/null 2>&1
 [ "$?" -ne 0 ] && fail "data partition not mounted"
 
-# This is the positive exit condition.
+# This resets the boot counter for this slot group.
 rauc status mark-good
+# This means that we've booted this slot in case this happened to be the first
+# boot after an update.
+fw_setenv UNBOOTED_UPDATE 0
