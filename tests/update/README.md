@@ -8,6 +8,10 @@ versions of an update bundle and then iteratively updates the target.
 * `python3-pip`
 * `python3-venv`
 
+### Optional
+* `curl` - If you are running this with power cycling and using the default power cycle method
+you will need `curl` installed.
+
 ## Getting Started
 1. Setup a virtual environment.  From this directory:
     ```
