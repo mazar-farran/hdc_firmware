@@ -10,7 +10,7 @@ CAMERA_API_DEPENDENCIES = host-zig-x86-64
 
 define CAMERA_API_BUILD_CMDS
   # zig installs to a bin directory by default, so that's why we don't prefix to dashcam/bin.
-	zig build install --build-file $(@D)/build.zig --prefix $(TARGET_DIR)/opt/dashcam/
+	$(BUILD_DIR)/host-zig-x86-64-*/zig build install --build-file $(@D)/build.zig --prefix $(TARGET_DIR)/opt/dashcam/
 endef
 
 define CAMERA_API_INSTALL_INIT_SYSTEMD
