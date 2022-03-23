@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This is the semantic version of the software.  You should change this when
+# producing production builds after a change.  The way this is written though,
+# the builder could set the environment variable and this won't override it.
+[[ -z "${SEMANTIC_VERSION}" ]] && SEMANTIC_VERSION="0.0.1-alpha"
+
 set -eu
 
 # The only way in Buildroot we can figure out what configuration we are working with is by
@@ -26,6 +31,7 @@ install -D -m 0644 ${BR2_EXTERNAL_DASHCAM_PATH}/board/raspberrypi/pki/dev/keyrin
 # Populate version info.
 cat > ${TARGET_DIR}/etc/version.json <<EOF
 {
+  "version": "${SEMANTIC_VERSION}",
   "branch": "$(git -C ${BR2_EXTERNAL_DASHCAM_PATH} branch --show-current)",
   "build_date": "$(date)",
   "hash": "$(git -C ${BR2_EXTERNAL_DASHCAM_PATH} rev-parse --short HEAD)",

@@ -175,6 +175,12 @@ make
 cat images/rpi-firmware/config.txt
 ```
 
+### Producing a Production Build
+
+On top of making sure to use a production default configuration (see above), do make sure to
+roll the semantic version in the [post-build.sh](./dashcam/board/raspberrypi/post_build.sh)
+script.
+
 ## Updating the Firmware
 
 The dashcam provides an HTTP server to manage firmware updates.
