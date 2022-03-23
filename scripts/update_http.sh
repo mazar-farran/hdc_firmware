@@ -162,6 +162,12 @@ if [[ ${CODE} -ne 200 ]]; then
   exit ${ERROR_BAD_POST}
 fi
 
+# Give the target a chance to transition out of the ready/failed state before we
+# start checking for a terminal state.  If we started in failed and didn't have
+# this we would think we failed below when we didn't even have a chance to get
+# out of the failed state.
+sleep 1
+
 while true
 do
   STATE=$(get_state)
