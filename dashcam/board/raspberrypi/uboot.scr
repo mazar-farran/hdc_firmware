@@ -15,7 +15,7 @@ test -n "${UNBOOTED_UPDATE}" || setenv UNBOOTED_UPDATE 1
 # - We substitute our own init file to implement an overlay FS.
 # - tty1 is the virtual terminal (HDMI display and USB keyboard).
 # - ttyAMA0 is the serial console on GPIO pins 6/8/10.
-default_bootargs="init=/opt/dashcam/bin/overlayroot.sh rootfstype=squashfs rootwait console=tty1 console=ttyAMA0,115200 coherent_pool=1M vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000"
+default_bootargs="init=/opt/dashcam/bin/overlayroot.sh rootfstype=squashfs rootwait console=tty1 console=ttyAMA0,115200"
 
 # RPi firmware uses a dynamic fdt_addr, but U-Boot does not use the fw
 # provided address if fdt_addr is already defined in the environment!
