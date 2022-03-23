@@ -8,13 +8,22 @@
 # So I'm going to use loops with a number of iterations and 1 second sleeps, so 
 # the number of iterations approximates amount of time the loop may run.
 # 
-# Right now a failure exits with a non-zero code.  We can leave it up to the systemd
-# configuration to decide how to handle that.
-#
 # Print echoes get written to systemd/journald.  View using either:
 # journalctl [OPTIONS]
 # systemctl status bootbit
 # Additionally, errors get routed to the kernel log (i.e. dmesg).
+
+# Start by figuring out if this is the first boot after an update.
+NEW_UPDATE=$(fw_printenv UNBOOTED_UPDATE | awk -F= '{print $2}') 
+[ "$?" -ne 0 ] && NEW_UPDATE=1
+
+# After this (either success or failure) it will not be the first boot after an
+# update.  Even if it fails and we revert to the inactive slot.
+fw_setenv UNBOOTED_UPDATE 0
+
+# We should probably pull the expected address from dhcpcd.conf.
+WIFI_IP=192.168.0.10
+OU_PORT=8080
 
 print_info() {
   echo -e "$1" | systemd-cat -p info -t bootbit
@@ -27,7 +36,28 @@ print_error() {
 
 fail() {
   print_error "BIT failed: $1"
-  exit 1
+
+  if [ ${NEW_UPDATE} -ne 0 ]; then
+    # If we fail on the first boot after an update we immediately revert to the
+    # previous slot.
+    rauc status mark-bad
+    reboot
+  else
+    # If it's not the first boot after an update we are much more pacific.  We
+    # update the OU with the failure message so at least it can be shown to the
+    # user somehow.
+    wget http://localhost:${OU_PORT}/bootstate --post-data "$1" > /dev/null 2>&1
+
+    # We still mark this slot as good since failure to do so would just mean
+    # that the counter would decrement, and after three boots like this the
+    # firmware would revert to the inactive slot.  Which would be a surprise to
+    # the user.  Basically to be here would mean that the BIT passed after the
+    # update but has failed on some subsequent boot, which implies a hardware
+    # failure, not a software or configuration failure.  And if it is hardware,
+    # then switching to the inactive slot won't help anyways.
+    rauc status mark-good
+    exit 1
+  fi
 }
 
 # Gets a process ID given a greppable string.
@@ -52,12 +82,10 @@ check_proc_ids() {
 OU_PROC="onboardupdater"
 RAUC_PROC="rauc"
 CCF_PROC="capable_camera_"
-BRIDGE_PROC="libcamera-bri"
 
 OU_PID=
 RAUC_PID=
 CCF_PID=
-BRIDGE_PID=
 
 # This first loop tries to identify the PIDs of processes we are interested in.
 ITER=0
@@ -66,15 +94,13 @@ while true; do
   [ -z "${OU_PID}" ] && OU_PID=$(get_proc_id "${OU_PROC}")
   [ -z "${RAUC_PID}" ] && RAUC_PID=$(get_proc_id "${RAUC_PROC}")
   [ -z "${CCF_PID}" ] && CCF_PID=$(get_proc_id "${CCF_PROC}")
-  [ -z "${BRIDGE_PID}" ] && BRIDGE_PID=$(get_proc_id "${BRIDGE_PROC}")
   
   # The libcamera-bridge process is not at the point where we can run it
   # without erroring.  So don't make it part of our checks... yet.
   # TODO(chris.shaw): fix libcamera-bridge startup.
   if [ -n "${OU_PID}" ] &&
     [ -n "${RAUC_PID}" ] &&
-    [ -n "${CCF_PID}" ] #&&
-    # [ -n "${BRIDGE_PID}" ]
+    [ -n "${CCF_PID}" ]
   then
     # If we've found all the processes we're looking for we can kick out early.
     break
@@ -94,19 +120,11 @@ sleep 5
 NEW_OU_PID=$(get_proc_id "${OU_PROC}")
 NEW_RAUC_PID=$(get_proc_id "${RAUC_PROC}")
 NEW_CCF_PID=$(get_proc_id "${CCF_PROC}")
-NEW_BRIDGE_PID=$(get_proc_id "${BRIDGE_PROC}")
 
 check_proc_ids "${OU_PID}" "${NEW_OU_PID}" "${OU_PROC}"
 check_proc_ids "${RAUC_PID}" "${NEW_RAUC_PID}" "${RAUC_PROC}"
 check_proc_ids "${CCF_PID}" "${NEW_CCF_PID}" "${CCF_PROC}"
 
-# The libcamera-bridge process is not at the point where we can run it
-# without erroring.  So don't make it part of our checks... yet.
-# TODO(chris.shaw): fix libcamera-bridge startup.
-#check_proc_ids "${BRIDGE_PID}" "${NEW_BRIDGE_PID}" "${BRIDGE_PROC}"
-
-# We should probably pull the expected address from dhcpcd.conf.
-WIFI_IP=192.168.0.10
 # The wlan0 interface is the last thing to come up.  So we'll give it a bit more time.
 ITER=0
 NUM_ITERS=10
@@ -123,7 +141,7 @@ while true; do
 done
 
 # Test the onboard updater is answering requests on the wifi interface.
-wget http://192.168.0.10:8080/status --spider > /dev/null 2>&1
+wget http://${WIFI_IP}:${OU_PORT}/status --spider > /dev/null 2>&1
 [ "$?" -ne 0 ] && fail "cannot get status from onboard updater"
 
 # Test that the persistent data partition is mounted.
@@ -132,6 +150,4 @@ cat /proc/mounts | grep /mnt/data > /dev/null 2>&1
 
 # This resets the boot counter for this slot group.
 rauc status mark-good
-# This means that we've booted this slot in case this happened to be the first
-# boot after an update.
-fw_setenv UNBOOTED_UPDATE 0
+wget http://localhost:${OU_PORT}/bootstate --post-data "healthy" > /dev/null 2>&1

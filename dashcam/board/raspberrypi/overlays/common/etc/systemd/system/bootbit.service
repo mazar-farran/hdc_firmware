@@ -9,25 +9,10 @@ Description=Dashcam Boot BIT
 After=rauc.service
 After=onboard-updater.service
 After=camera-api.service
-After=camera-bridge.service
-
-# So, the BIT will fail for a number of reasons.  In production I think we will
-# want to trigger a reboot since it's likely the firmware has been updated and
-# something is badly wrong.  For now we'll just let the firmware proceed but
-# we won't mark the slot as "good".
-FailureAction=none
-# FailureAction=reboot
-
-# We try to run the BIT multiple times before declaring failure.  By setting a
-# high interval we are basically saying that we will try to run the process
-# "burst" times before declaring failure.
-StartLimitBurst=3
-StartLimitIntervalSec=3600
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=/opt/dashcam/bin/bootbit.sh
-Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
