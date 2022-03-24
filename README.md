@@ -1,7 +1,7 @@
 # dashcam
 
 ## Dependencies
-Refer to (or run) the [host_setup.sh](./scripts/host_setup.sh) for a list of required
+Refer to (or run) the [scripts/host_setup.sh](./scripts/host_setup.sh) for a list of required
 and optional dependencies.
 
 Alternatively, refer to the Buildroot manual for 
@@ -74,6 +74,8 @@ script.  Relative to the `output` directory and assuming the device will mount t
     ```
     ../scripts/update_ssh.sh 192.168.1.10
     ```
+
+Do note that steps 2 and 3 can be performed using the [scripts/rebuild.sh](./scripts/rebuild.sh) script.
 
 ## Working With the Target
 
@@ -189,6 +191,47 @@ script.
 The dashcam provides an HTTP server to manage firmware updates.
 [Refer to the Onboard Updater project](https://github.com/cshaw9-rtr/onboardupdater) for a
 description of the API.  Or use the update script [provided in this project here](./scripts/update_http.sh).
+
+## Docker
+
+A Dockerfile is provided in the project root and can be used to build update artifacts in an
+environment isolated from the host system, and perhaps in the future, using a CI build server.
+To use:
+
+1. Setup your host system to use Docker based on [Docker instructions here](https://docs.docker.com/engine/install/ubuntu/).
+
+2. Build the Docker image.  Do this the first time, and anytime the dashcam source code changes.
+    From the project root:
+    ```
+    docker build --rm -t dashcam .
+    ```
+    This will produce the `dashcam:latest` image, as verified using `docker image ls`.
+
+3. Run a container based on the image.
+    ```
+    docker run --rm -it dashcam
+    ```
+    This will start a bash shell in the container in the project root.  The source code files in the
+    container are copies of those on the host system when the Docker image was built, so once again,
+    **if the source code changes, repeat step #2**.
+
+4. Do a rebuild.
+    ```
+    ./scripts/rebuild.sh
+    ```
+    Where options passed to the rebuild script specify the build configuration.
+
+5. Optionally copy the build artifacts out of the container using any number of methods, such as
+    [those described here](https://stackoverflow.com/questions/22049212/docker-copying-files-from-docker-container-to-host).
+
+6. Optionally update the target using [scripts/update_http.sh](./scripts/update_http.sh).
+
+### Future
+
+If the use of Docker becomes part of the workflow:
+* The use of ENTRYPOINT/CMD could be used to kick off a build automatically without need for an
+interactive bash session.
+* The copying of the build artifacts back to the host could be automated.
 
 ## Limitations
 

@@ -68,7 +68,8 @@ echo -e "\nInstalling required packages.\n"
 
 # This is just from the Buildroot manual:
 # https://buildroot.org/downloads/manual/manual.html#requirement
-#
+# This is the minimum to build the dashcam project and use the update_http.sh script.
+# 
 # Install using apt-get instead of apt and use DEBIAN_FRONTEND=noninteractive
 # so this script can be used by our Dockerfile.
 apt-get update
@@ -88,19 +89,21 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
   cpio \
   unzip \
   rsync \
+  file \
   bc \
-  wget
+  wget \
+  git \
+  python3 \
+  cmake \
+  curl \
+  jq
 
 if [[ ${INSTALL_OPTIONAL} == "true" ]]; then
   echo -e "\nInstalling optional packages.\n"
 
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    python3 \
     python3-pip \
     python3-venv \
-    cmake \
-    curl \
-    jq \
     qt5-default
 fi
 
