@@ -1,7 +1,10 @@
 # dashcam
 
 ## Dependencies
-Refer to the Buildroot manual for 
+Refer to (or run) the [host_setup.sh](./scripts/host_setup.sh) for a list of required
+and optional dependencies.
+
+Alternatively, refer to the Buildroot manual for 
 [required and optional dependencies](https://buildroot.org/downloads/manual/manual.html#requirement).
 
 To add to that:
