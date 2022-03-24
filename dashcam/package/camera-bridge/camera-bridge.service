@@ -5,7 +5,8 @@ After=network.target
 [Service]
 # TODO(chris.shaw): start with root and change back to dashcam when we have correct groups/permissions.
 User=root
-WorkingDirectory=/opt/dashcam/bin/camera
+WorkingDirectory=/opt/dashcam/bin
+Environment="LD_LIBRARY_PATH=/opt/dashcam/lib"
 # TODO(chris.shaw): we need to install the shell script wrapper and call that, not the actual binary.
 ExecStart=/opt/dashcam/bin/libcamera-bridge
 Restart=always
