@@ -18,12 +18,15 @@ ERROR_UPDATE_FAILED=8
 ERROR_UPDATE_TIMEOUT=9
 ERROR_REBOOT_TIMEOUT=10
 ERROR_NO_CONNECTION=11
+ERROR_BOOTBIT_TIMEOUT=12
+ERROR_BOOTBIT_NOT_HEALTHY=13
 
 TIMEOUT_UPDATE_S=30
 # Use a long reboot time in case connecting over wifi.  Wifi on the target is the last thing to
 # come up and then the host wifi needs to detect it and connect to it.
 TIMEOUT_REBOOT_S=70
 REBOOT_SLEEP_TIME_S=30
+TIMEOUT_BOOTBIT_S=10
 TIMEOUT_CONNECTION_S=0.1
 
 # Test for curl dependency.
@@ -124,6 +127,16 @@ function get_rauc_state()
     echo ""
   fi
   local STATE=$(echo ${JSON} | jq .rauc_state)
+  echo ${STATE}
+}
+
+function get_boot_state()
+{
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  if [[ $? -ne 0 ]]; then
+    echo ""
+  fi
+  local STATE=$(echo ${JSON} | jq .boot_state)
   echo ${STATE}
 }
 
@@ -238,5 +251,30 @@ done
 
 echo -e "Querying version information:"
 curl -s i -X GET http://${TARGET_IP}:8080/version
-echo ""
+
+echo -e "\n\nWaiting for Boot BIT to run.\n"
+BOOTBIT_START_TIME_S=$(get_time_s)
+while true
+do
+  STATE=$(get_boot_state)
+
+  if [[ ${STATE} != \"\" ]]; then
+    if [[ ${STATE} == \"healthy\" ]]; then
+      echo "Boot BIT is healthy."
+      break
+    else
+      echo "Boot BIT failed with status: ${STATE}"
+      exit ${ERROR_BOOTBIT_NOT_HEALTHY}    
+    fi
+  fi
+
+  let "TIME_SINCE_START_S = $(get_time_s) - ${BOOTBIT_START_TIME_S}"
+  if [[ ${TIME_REMAINING_S} -ge TIMEOUT_BOOTBIT_S ]]; then
+    echo "Error: timed out waiting for the Boot BIT to complete."
+    exit ${ERROR_BOOTBIT_TIMEOUT}
+  fi
+
+  sleep 0.5
+done
+
 echo -e "\nUpdate complete!"

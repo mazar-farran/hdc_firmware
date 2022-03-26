@@ -41,17 +41,19 @@ print_error() {
 fail() {
   print_error "BIT failed: $1"
 
+  # Update the OU with the failure message so at least it can be shown to the
+  # user somehow.
+  wget -O - --post-data "$1" http://localhost:${OU_PORT}/bootstate > /dev/null 2>&1
+
   if [ ${NEW_UPDATE} -ne 0 ]; then
     # If we fail on the first boot after an update we immediately revert to the
     # previous slot.
     rauc status mark-bad
+    # Give a polling client long enough to read the OU bootstate before we reboot.
+    sleep 1
     reboot
   else
-    # If it's not the first boot after an update we are much more pacific.  We
-    # update the OU with the failure message so at least it can be shown to the
-    # user somehow.
-    wget http://localhost:${OU_PORT}/bootstate --post-data "$1" > /dev/null 2>&1
-
+    # If it's not the first boot after an update we are much more pacific.
     # We still mark this slot as good since failure to do so would just mean
     # that the counter would decrement, and after three boots like this the
     # firmware would revert to the inactive slot.  Which would be a surprise to
@@ -157,4 +159,4 @@ cat /proc/mounts | grep /mnt/data > /dev/null 2>&1
 
 # This resets the boot counter for this slot group.
 rauc status mark-good
-wget http://localhost:${OU_PORT}/bootstate --post-data "healthy" > /dev/null 2>&1
+wget -O - --post-data "healthy" http://localhost:${OU_PORT}/bootstate > /dev/null 2>&1
