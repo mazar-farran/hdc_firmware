@@ -13,6 +13,10 @@
 # systemctl status bootbit
 # Additionally, errors get routed to the kernel log (i.e. dmesg).
 
+# Right now the 64-bit build doesn't build the camera-api package (i.e.
+# capable_camera_firmware).  So make it possible to ignore that in the BIT.
+IGNORE_CCF=0
+
 # Start by figuring out if this is the first boot after an update.
 NEW_UPDATE=$(fw_printenv UNBOOTED_UPDATE | awk -F= '{print $2}') 
 [ "$?" -ne 0 ] && NEW_UPDATE=1
@@ -99,11 +103,12 @@ while true; do
   # without erroring.  So don't make it part of our checks... yet.
   # TODO(chris.shaw): fix libcamera-bridge startup.
   if [ -n "${OU_PID}" ] &&
-    [ -n "${RAUC_PID}" ] &&
-    [ -n "${CCF_PID}" ]
+    [ -n "${RAUC_PID}" ]
   then
-    # If we've found all the processes we're looking for we can kick out early.
-    break
+    if [ -n "${CCF_PID}" ] || [ "${IGNORE_CCF}" -ne 0 ]; then
+      # If we've found all the processes we're looking for we can kick out early.
+      break
+    fi
   fi
 
   ITER=$((ITER + 1))
@@ -123,7 +128,9 @@ NEW_CCF_PID=$(get_proc_id "${CCF_PROC}")
 
 check_proc_ids "${OU_PID}" "${NEW_OU_PID}" "${OU_PROC}"
 check_proc_ids "${RAUC_PID}" "${NEW_RAUC_PID}" "${RAUC_PROC}"
-check_proc_ids "${CCF_PID}" "${NEW_CCF_PID}" "${CCF_PROC}"
+if [ "${IGNORE_CCF}" -eq 0 ]; then
+  check_proc_ids "${CCF_PID}" "${NEW_CCF_PID}" "${CCF_PROC}"
+fi
 
 # The wlan0 interface is the last thing to come up.  So we'll give it a bit more time.
 ITER=0

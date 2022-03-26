@@ -74,3 +74,9 @@ if [[ ${IS_DEV} -ne 0 ]]; then
 else
   rm -rf ${TARGET_DIR}/etc/ssh
 fi
+
+# 64-bit doesn't yet support the camera-api package so make sure the BIT doesn't
+# look for it.
+if [[ ${IS_64} -ne 0 ]]; then
+  sed -i "s/IGNORE_CCF=0/IGNORE_CCF=1/g" ${TARGET_DIR}/opt/dashcam/bin/bootbit.sh
+fi
