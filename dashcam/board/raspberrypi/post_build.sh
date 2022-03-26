@@ -14,6 +14,9 @@ set -eu
 BOARD_DIR="$(dirname $0)"
 BOARD_NAME="$(basename ${BOARD_DIR})"
 
+IS_64=0
+[[ ${BOARD_NAME} = *_64_* ]] && IS_64=1
+
 IS_DEV=0
 BUILD_TYPE="prod"
 if [[ ${BOARD_NAME} = *_dev ]]; then
@@ -50,6 +53,12 @@ sed -i "s/#DNSStubListener=yes/DNSStubListener=no/g" ${TARGET_DIR}/etc/systemd/r
 # The dhcpcd service file has the wrong PID file location.  Running dhcpcd -P on the target gives
 # the correct location.
 sed -i "s/PIDFile=\/run\/dhcpcd.pid/PIDFile=\/var\/run\/dhcpcd\/pid/g" ${TARGET_DIR}/usr/lib/systemd/system/dhcpcd.service
+
+# Here is where we make changes to the config.txt file for different build configurations.
+CONFIG_PATH="${BINARIES_DIR}/rpi-firmware/config.txt"
+if [[ ${IS_64} -ne 0 ]]; then
+  sed -i "s/#arm_64bit=1/arm_64bit=1/g" ${CONFIG_PATH}
+fi
 
 if [[ ${IS_DEV} -ne 0 ]]; then
   # If we haven't generated SSH keys for the target yet do so now.  If they're
