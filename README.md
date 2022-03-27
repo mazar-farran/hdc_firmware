@@ -31,9 +31,11 @@ interface when running `make xconfig`.
 
 ## Getting Started
 
-1. Clone the top-level dashcam repository with submodules.
+1. Clone the top-level dashcam repository with submodules.  The repository is hosted on BitBucket
+so make sure you have SSH keys setup (this is a requirement of this project).
+
     ```
-    git clone --recurse-submodules https://github.com/cshaw9-rtr/dashcam.git
+    git clone --recurse-submodules git@bitbucket.org:chr1sniessl/dashcam.git
     cd dashcam
     ``` 
 
