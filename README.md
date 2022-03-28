@@ -244,8 +244,5 @@ interactive bash session.
 
 ### 64-bit
 
-While there is a configuration for 64-bit (aarch64), it is not fully supported right now due to:
-1. The Zig component of the camera software does not build with a 64-bit toolchain.
-
-2. The rpi-userland package is not supported by Buildroot for 64-bit builds  and we use the `vcgencmd` 
-from that package to get the target serial number when setting the hostname.
+While there is a configuration for 64-bit (aarch64), it is not fully supported right now due to
+the fact that the Zig component of the camera software does not build with a 64-bit toolchain.
