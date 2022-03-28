@@ -28,6 +28,7 @@ TIMEOUT_REBOOT_S=70
 REBOOT_SLEEP_TIME_S=30
 TIMEOUT_BOOTBIT_S=10
 TIMEOUT_CONNECTION_S=0.1
+PORT=8080
 
 # Test for curl dependency.
 curl --version > /dev/null 2>&1
@@ -103,7 +104,7 @@ if [[ ! -f ${FILE_PATH} ]]; then
 fi
 
 # Test for connectivity.
-CODE=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -o /dev/null -w "%{http_code}" -X GET http://${TARGET_IP}:8080/status)
+CODE=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -o /dev/null -w "%{http_code}" -X GET http://${TARGET_IP}:${PORT}/status)
 if [[ $? -ne 0 || ${CODE} -ne 200 ]]; then
   echo "Error: unable to get status from target."
   echo "Ensure you are connected to the target on IP of ${TARGET_IP}."
@@ -112,7 +113,7 @@ fi
 
 function get_state()
 {
-  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:${PORT}/status)
   if [[ $? -ne 0 ]]; then
     echo ""
   fi
@@ -122,7 +123,7 @@ function get_state()
 
 function get_rauc_state()
 {
-  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:${PORT}/status)
   if [[ $? -ne 0 ]]; then
     echo ""
   fi
@@ -132,7 +133,7 @@ function get_rauc_state()
 
 function get_boot_state()
 {
-  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:${PORT}/status)
   if [[ $? -ne 0 ]]; then
     echo ""
   fi
@@ -142,7 +143,7 @@ function get_boot_state()
 
 function get_last_error()
 {
-  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:8080/status)
+  local JSON=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:${PORT}/status)
   if [[ $? -ne 0 ]]; then
     echo ""
   fi
@@ -164,7 +165,7 @@ fi
 
 UPDATE_START_TIME_S=$(get_time_s)
 echo -e "\nPosting update..."
-CODE=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -o /dev/null -w "%{http_code}" -X POST --data-binary @${FILE_PATH} http://${TARGET_IP}:8080/update)
+CODE=$(curl -s --connect-timeout ${TIMEOUT_CONNECTION_S} -o /dev/null -w "%{http_code}" -X POST --data-binary @${FILE_PATH} http://${TARGET_IP}:${PORT}/update)
 if [[ $? -ne 0 ]]; then
   echo "Error: bad post to target."
   exit ${ERROR_BAD_POST}
@@ -199,8 +200,9 @@ do
   fi
 
   if [[ ${STATE} == \"failed\" ]]; then
-    LAST_ERROR=$(get_last_error)
-    echo -e "\nUpdate failed: ${LAST_ERROR}"
+    echo -e "\nUpdate failed with status:"
+    curl -s i --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:${PORT}/status
+    echo ""
     exit ${ERROR_UPDATE_FAILED}
   fi
 
@@ -250,7 +252,7 @@ do
 done
 
 echo -e "Querying version information:"
-curl -s i -X GET http://${TARGET_IP}:8080/version
+curl -s i --connect-timeout ${TIMEOUT_CONNECTION_S} -X GET http://${TARGET_IP}:${PORT}/version
 
 echo -e "\n\nWaiting for Boot BIT to run.\n"
 BOOTBIT_START_TIME_S=$(get_time_s)
