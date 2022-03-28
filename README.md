@@ -136,9 +136,12 @@ sudo arp-scan 192.168.1.0/24
 ```
 The target will likely show up as `(Unknown)`.
 
-### My USB keyboard doesn't work in the virtual console
+### My USB Keyboard Doesn't Work in the Virtual Console
 Make sure you've unplugged the USB cable from the USB flashing port.  That seems to messup the use 
 of a USB keyboard.
+
+### The USB Thumb Drive Isn't Being Mounted
+As with other USB problems, make sure you've unplugged the USB cable from the USB flashing port.
 
 ### Remote Host Identification Error
 If you are using SSH to the target (like when using the `update_ssh.sh` script) you may get an

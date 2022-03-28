@@ -42,7 +42,8 @@ cat > ${TARGET_DIR}/etc/version.json <<EOF
 }
 EOF
 
-# Options necessary for usbmount.
+# Options necessary for usbmount from C.Osterwood.  Note that we give rules for vfat but I've also
+# tested an ext4 thumbdrive and that mounted fine and can be written to.
 sed -i "s/PrivateMounts=yes/PrivateMounts=no/g" ${TARGET_DIR}/lib/systemd/system/systemd-udevd.service
 sed -i "s/FS_MOUNTOPTIONS=\"\"/FS_MOUNTOPTIONS=\"-fstype=vfat,gid=users,dmask=0007,fmask=0117\"/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
 sed -i "s/sync,noexec,nodev/noexec,nodev/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
