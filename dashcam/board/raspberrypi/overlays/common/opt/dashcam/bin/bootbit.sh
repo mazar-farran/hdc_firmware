@@ -101,9 +101,6 @@ while true; do
   [ -z "${RAUC_PID}" ] && RAUC_PID=$(get_proc_id "${RAUC_PROC}")
   [ -z "${CCF_PID}" ] && CCF_PID=$(get_proc_id "${CCF_PROC}")
   
-  # The libcamera-bridge process is not at the point where we can run it
-  # without erroring.  So don't make it part of our checks... yet.
-  # TODO(chris.shaw): fix libcamera-bridge startup.
   if [ -n "${OU_PID}" ] &&
     [ -n "${RAUC_PID}" ]
   then
@@ -138,7 +135,8 @@ fi
 ITER=0
 NUM_ITERS=10
 while true; do
-  # TODO(chris.shaw): there may be a better way of testing this.  
+  # There may be a better way of testing this but this seems sufficient.  If hostapd
+  # didn't bring up the interface it won't have an IP address on wlan0.
   ip addr show wlan0 | grep ${WIFI_IP} > /dev/null 2>&1
   [ "$?" -eq 0 ] && break
 
