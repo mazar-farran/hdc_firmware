@@ -196,6 +196,26 @@ On top of making sure to use a production default configuration (see above), do 
 roll the semantic version in the [post-build.sh](./dashcam/board/raspberrypi/post_build.sh)
 script.
 
+### Making Buildroot Configuration Changes
+
+Running `make` to build a Buildroot project uses the `output/.config` file to fully specify the
+Buildroot configuration.  This file is not under source control and is out-of-sight, out-of-mind,
+so it is another source of confusion when it looks like changes you've made are not being applied.
+
+The `output/.config` file is set when:
+1. You make a default config, such as `make raspberrypicm4io_dev_dashcam_defconfig`.  Buildroot
+applies the defconfig to the Buildroot defaults to generate the `output/.config` file.
+2. You run the menu editor (e.g. `make xconfig`) and save changes.
+
+**Changes to `output/.config` are not automatically transferred back to the defconfig that is under
+git source control.**  To do that you need to `make savedefconfig`.  This will only apply then changes
+to the defconfig that the `output/.config` file was generated from.  Since there are multiple
+defconfigs in the dashcam project you should probably also manually copy the defconfig changes to
+other defconfig files.
+
+Keeping the defconfig in sync with the `output/.config` file is an important part of minimizing
+Buildroot "weirdness".
+
 ## Updating the Firmware
 
 The dashcam provides an HTTP server to manage firmware updates.
