@@ -7,10 +7,7 @@ After=network.target
 User=root
 WorkingDirectory=/opt/dashcam/bin
 Environment="LD_LIBRARY_PATH=/opt/dashcam/lib"
-# TODO(chris.shaw): we need to install the shell script wrapper and call that, not the actual binary.
-# But if we do call the binary DO pass representative arguments.  Without these it tries to capture
-# too quickly and you get an overflow and kernel stack trace.
-ExecStart=/opt/dashcam/bin/libcamera-bridge --codec mjpeg --segment 0 --width 4056 --height 2160 --framerate 10
+ExecStart=sh /opt/dashcam/bin/bridge.sh
 Restart=always
 
 [Install]
