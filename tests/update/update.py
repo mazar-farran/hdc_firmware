@@ -327,7 +327,7 @@ def test_connection(base_uri):
 )
 @click.option(
     "--power-cycle-percent",
-    default=60,
+    default=30,
     show_default=True,
     type=click.IntRange(0, 100),
     help="What (approximate) percent of iterations we should power cycle.",
