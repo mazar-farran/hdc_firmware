@@ -4,7 +4,8 @@
 #
 ################################################################################
 
-CAMERA_API_VERSION = 76e09ef5ec49b81094ca6298ca524d26c45c2fa3
+CAMERA_API_VERSION = d8ee0e4a2e88ce5e6409780f006a9d1a6a0c4e19
+
 CAMERA_API_SITE = $(call github,CapableRobot,capable_camera_firmware,$(CAMERA_API_VERSION))
 CAMERA_API_DEPENDENCIES = host-zig-x86-64
 
