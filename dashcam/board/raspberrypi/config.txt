@@ -23,7 +23,8 @@ gpu_mem_1024=100
 # miniuart and makes UART0 the primary UART that the ttyAMA0 serial console runs
 # on.
 # https://www.raspberrypi.com/documentation/computers/configuration.html#uarts-and-device-tree
-dtoverlay=miniuart-bt
+
+dtoverlay=uart0
 
 dtparam=i2c_arm=on
 dtparam=spi=on
