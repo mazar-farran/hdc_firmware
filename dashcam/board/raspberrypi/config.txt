@@ -24,7 +24,9 @@ gpu_mem_1024=100
 # on.
 # https://www.raspberrypi.com/documentation/computers/configuration.html#uarts-and-device-tree
 
-dtoverlay=uart0
+dtoverlay=miniuart-bt
+enable_uart=1
+dtoverlay=uart5
 
 dtparam=i2c_arm=on
 dtparam=spi=on
