@@ -1,0 +1,11 @@
+[Unit]
+Description=GNSS Logger
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/dashcam/bin
+ExecStart=/opt/dashcam/bin/gnss-logger
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
