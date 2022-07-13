@@ -1,0 +1,3 @@
+path = /tmp/recording
+extension = gpsT
+logSize = 10000

@@ -1,0 +1,5 @@
+config BR2_PACKAGE_GNSS_LOGGER
+	bool "gpsd-logger"
+  select BR2_PACKAGE_GPSD_AND_CONFIG
+	help
+	  System GNSS logger
