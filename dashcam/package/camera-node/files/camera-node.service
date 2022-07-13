@@ -1,0 +1,13 @@
+[Unit]
+Description=Camera Node
+After=network.target
+
+[Service]
+
+User=root
+WorkingDirectory=/opt/dashcam/bin
+ExecStart=node 
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
