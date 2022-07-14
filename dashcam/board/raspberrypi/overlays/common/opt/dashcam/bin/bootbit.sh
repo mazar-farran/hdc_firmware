@@ -15,7 +15,7 @@
 
 # Right now the 64-bit build doesn't build the camera-api package (i.e.
 # capable_camera_firmware).  So make it possible to ignore that in the BIT.
-IGNORE_CCF=0
+IGNORE_CCF=1
 
 # Start by figuring out if this is the first boot after an update.
 NEW_UPDATE=$(fw_printenv UNBOOTED_UPDATE | awk -F= '{print $2}') 
