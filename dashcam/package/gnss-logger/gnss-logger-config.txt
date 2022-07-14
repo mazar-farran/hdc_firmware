@@ -1,3 +1,3 @@
-path = /tmp/recording
-extension = gpsT
+path = /tmp/recording/gps
+extension = json
 logSize = 10000
