@@ -4,11 +4,12 @@
 #
 ################################################################################
 
-CAMERA_BRIDGE_VERSION = ff2131e7cbd4a6ba6b7976e9eebba031cfd15a44
+CAMERA_BRIDGE_VERSION = b95fb4827639bb344332239294cc6f94575570b6
 CAMERA_BRIDGE_SITE = ssh://git@bitbucket.org/chr1sniessl/capable_camera_firmware-mirror.git
 CAMERA_BRIDGE_SITE_METHOD = git
 CAMERA_BRIDGE_CONF_OPTS = -DENABLE_OPENCV=0 -DCMAKE_INSTALL_PREFIX="/opt/dashcam"\
                           -DINSTALL_CONFIG_FILES_PATH="/opt/dashcam/bin/"
+
 # Looks like the camera-bridge links against libjpeg but the best way to provide
 # this is with the jpeg-turbo package.
 CAMERA_BRIDGE_DEPENDENCIES = boost libcamera jpeg-turbo json-for-modern-cpp
