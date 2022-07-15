@@ -21252,10 +21252,10 @@ router.get('/imu', async (req, res) => {
   }
 });
 
-router.get('/gnss', async (req, res) => {
+router.get('/gps', async (req, res) => {
   try {
-    const files = await fs.readdirSync(FILES_ROOT_FOLDER);
-    res.json(files.filter(filename => filename.indexOf('.gps') !== -1));
+    const files = await fs.readdirSync(FILES_ROOT_FOLDER + '/gps');
+    res.json(files.filter(filename => filename.indexOf('.json') !== -1));
   } catch (error) {
     res.json({ error });
   }
