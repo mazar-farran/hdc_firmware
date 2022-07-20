@@ -21237,7 +21237,8 @@ app.use('/api/1', router);
 router.get('/recordings', async (req, res) => {
   try {
     const files = await fs.readdirSync(FILES_ROOT_FOLDER);
-    res.json(files.filter(filename => filename.indexOf('.jpg') !== -1));
+    const imgFiles = files.filter(filename => filename.indexOf('.jpg') !== -1);
+    res.json(imgFiles);
   } catch (error) {
     res.json({ error });
   }
@@ -21271,17 +21272,25 @@ router.get('/init', async (req, res) => {
 });
 
 router.get('/info', async (req, res) => {
-  // return two global variables
+  // return some global variables
   res.json({
-    cpu_serial: 123,
-    cpu_revision: 456
+    api_version: 0.3
   });
+});
+
+router.get('/stats', async (req, res) => {
+  try {
+    const fileStat = await fs.statSync(FILES_ROOT_FOLDER + '/' + req.query.name);
+    res.json(fileStat);
+  } catch (error) {
+    res.json({ error });
+}
 });
 
 router.post('/start_stream', async (req, res) => {
   try {
-    const streamUrl = await cp.execSync('command to execute the video stream and get the URL back').toString();
-    res.json(streamUrl);
+    // const streamUrl = await cp.execSync('command to execute the video stream and get the URL back').toString();
+    res.json('http://192.168.0.10/test.mjpeg');
   } 
   catch (error) {
     res.json(error);
@@ -21290,15 +21299,15 @@ router.post('/start_stream', async (req, res) => {
 
 router.post('/stop_stream', async (req, res) => {
   try {
-    const streamUrl = await cp.execSync('command to stop the video stream and get the URL back').toString();
-    res.json(streamUrl);
+    //const streamUrl = await cp.execSync('command to stop the video stream and get the URL back').toString();
+    res.json('http://192.168.0.10/test.mjpeg');
   } 
   catch (error) {
     res.json(error);
   }
 });
 
-router.get('/gnss/sample', async (req, res) => {
+router.get('/gps/sample', async (req, res) => {
   res.json({
     "age": 98,
     "timestamp": "2022-05-04T00:49:31.800Z",
@@ -21341,11 +21350,17 @@ router.get('/imu/sample', async (req, res) => {
   })
 });
 
-router.get('/run_script', async (req, res) => {
-  // const output = await cp.execSync('systemctl stop camera-bridge; systemctl restart camera-api; systemctl start camera-bridge');
-  res.json({
-    output: 'done'
-  });
+router.get('/ubxtool', async (req, res) => {
+  try {
+    const output = await cp.execSync('ubxtool -p NAV-SAT -p NAV-SIG -p NAV-STATUS -p MON-RF', {
+      encoding: 'utf-8'
+    });
+    res.json({
+      output
+    }); 
+  } catch (error) {
+    res.json(error);
+  }
 });
 
 app.listen(PORT, () => {
