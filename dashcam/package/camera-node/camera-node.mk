@@ -14,8 +14,8 @@ define CAMERA_NODE_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 644 $(@D)/dashcam-api.js \
 		$(TARGET_DIR)/opt/dashcam/bin/dashcam-api.js
 	#Uncomment the command below once camera-node.service has been configured appropriately
-	#$(INSTALL) -D -m 644 $(@D)/camera-node.service \
-	#	$(TARGET_DIR)/usr/lib/systemd/system/camera-node.service
+	$(INSTALL) -D -m 644 $(@D)/camera-node.service \
+		$(TARGET_DIR)/usr/lib/systemd/system/camera-node.service
 endef
 
 $(eval $(generic-package))
