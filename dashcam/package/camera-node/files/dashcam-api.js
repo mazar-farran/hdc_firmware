@@ -21223,6 +21223,7 @@ const cp = __nccwpck_require__(2081);
 // const findRemoveSync = require('find-remove');
 
 const PORT = 5000;
+const API_VERSION = 0.4;
 const FILES_ROOT_FOLDER = __dirname + '/../../../tmp/recording';
 
 const app = express();
@@ -21263,18 +21264,30 @@ router.get('/gps', async (req, res) => {
 });
 
 router.get('/init', async (req, res) => {
-  // TBD
-  // call command to setup initial config
-  console.log('Connection established');
-  res.json({
-    output: 'done'
-  });
+  try {
+    const timeToSet = new Date(Number(req.query.time))
+      .toISOString()
+      .replace(/T/, ' ')
+      .replace(/\..+/, '')
+      .split(' ');
+
+    // setting up initial time for camera
+    await cp.execSync('timedatectl set-ntp 0');
+    await cp.execSync(`timedatectl set-time ${timeToSet[0]}`);
+    await cp.execSync(`timedatectl set-time ${timeToSet[1]}`);
+
+    res.json({
+      output: 'done'
+    });
+  } catch (error) {
+    res.json({ error });
+  }
 });
 
 router.get('/info', async (req, res) => {
   // return some global variables
   res.json({
-    api_version: 0.3
+    api_version: API_VERSION
   });
 });
 
