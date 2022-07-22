@@ -26,11 +26,17 @@ gpu_mem_1024=100
 
 dtoverlay=miniuart-bt
 enable_uart=1
-dtoverlay=uart5
 
+# GNSS configurations
+dtoverlay=uart5
+gpio=5=op,dl
+gpio=22=op,dh
+
+# General device configurations
 dtparam=i2c_arm=on
 dtparam=spi=on
 
+# Camera configurations
 dtoverlay=vc4-fkms-v3d,cma-512
 max_framebuffers=2
 
