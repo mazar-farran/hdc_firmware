@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-GNSS_LOGGER_VERSION = 801fe4f6390e6125e3d877ba7c6e3fe673a6d273
+GNSS_LOGGER_VERSION = 61f1c907410c5178fb2f49df8d430e2adfbca6dd
 GNSS_LOGGER_SITE = ssh://git@bitbucket.org/chr1sniessl/capable_camera_firmware-mirror.git
 GNSS_LOGGER_SITE_METHOD = git
 GNSS_LOGGER_CONF_OPTS = -DCMAKE_INSTALL_PREFIX="/opt/dashcam" \
