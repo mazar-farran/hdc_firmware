@@ -1,5 +1,6 @@
 path = /tmp/recording/gps
 extension = json
-logSize = 10000
+maxSize = 10000
 snr = false
 minMode = 2
+logDuration = 60
