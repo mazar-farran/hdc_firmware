@@ -21220,16 +21220,18 @@ var __webpack_exports__ = {};
 const express = __nccwpck_require__(7130);
 const fs = __nccwpck_require__(7147);
 const cp = __nccwpck_require__(2081);
-// const findRemoveSync = require('find-remove');
 
 const PORT = 5000;
-const API_VERSION = 0.4;
+const API_VERSION = 0.5;
 const FILES_ROOT_FOLDER = __dirname + '/../../../tmp/recording';
+const VERSION_INFO_PATH = __dirname + '/../../../etc/version.json';
 
 const app = express();
 
 // Making all the files accessible via direct HTTP urls
 app.use(express.static(FILES_ROOT_FOLDER));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const router = express.Router();
 
@@ -21238,7 +21240,25 @@ app.use('/api/1', router);
 router.get('/recordings', async (req, res) => {
   try {
     const files = await fs.readdirSync(FILES_ROOT_FOLDER);
-    const imgFiles = files.filter(filename => filename.indexOf('.jpg') !== -1);
+    const nameTimeMap = {};
+    const imgFiles = files
+      .filter(filename => {
+        if (filename.indexOf('.jpg') === -1) {
+          return false;
+        }
+        const t = getDateFromUnicodeTimastamp(filename).getTime();
+        if ((req.query.since && t < req.query.since) || (req.query.until && t > req.query.until)) {
+          return false;
+        }
+        nameTimeMap[filename] = t;
+        return true;
+      })
+      .map(filename => {
+        return {
+          path: filename,
+          date: nameTimeMap[filename]
+        }
+      });
     res.json(imgFiles);
   } catch (error) {
     res.json({ error });
@@ -21248,7 +21268,26 @@ router.get('/recordings', async (req, res) => {
 router.get('/imu', async (req, res) => {
   try {
     const files = await fs.readdirSync(FILES_ROOT_FOLDER);
-    res.json(files.filter(filename => filename.indexOf('.imu') !== -1));
+    const nameTimeMap = {};
+    const imuFiles = files
+      .filter(filename => {
+        if (filename.indexOf('.imu') === -1) {
+          return false;
+        }
+        const t = getDateFromFilename(filename).getTime();
+        if ((req.query.since && t < req.query.since) || (req.query.until && t > req.query.until)) {
+          return false;
+        }
+        nameTimeMap[filename] = t;
+        return true;
+      })
+      .map(filename => {
+        return {
+          path: filename,
+          date: nameTimeMap[filename]
+        }
+      });
+    res.json(imuFiles);
   } catch (error) {
     res.json({ error });
   }
@@ -21257,7 +21296,34 @@ router.get('/imu', async (req, res) => {
 router.get('/gps', async (req, res) => {
   try {
     const files = await fs.readdirSync(FILES_ROOT_FOLDER + '/gps');
-    res.json(files.filter(filename => filename.indexOf('.json') !== -1));
+    if (files.length) {
+      // Last GPS file is not finished yet
+      files.pop();
+    }
+    const nameTimeMap = {};
+    const gpsFiles = files
+      .filter(filename => {
+        if (filename.indexOf('.json') === -1) {
+          return false;
+        }
+        const t = getDateFromFilename(filename).getTime();
+        if ((req.query.since && t < req.query.since) || (req.query.until && t > req.query.until)) {
+          return false;
+        }
+        nameTimeMap[filename] = t;
+        return true;
+      });
+    
+    const gpsFilesWithStat = [];
+    for (let filename of gpsFiles) {
+      const fileStat = await fs.statSync(FILES_ROOT_FOLDER + '/gps/' + filename);
+      gpsFilesWithStat.push({
+        path: filename,
+        date: nameTimeMap[filename],
+        size: fileStat.size
+      })
+    }
+    res.json(gpsFilesWithStat);
   } catch (error) {
     res.json({ error });
   }
@@ -21285,8 +21351,17 @@ router.get('/init', async (req, res) => {
 });
 
 router.get('/info', async (req, res) => {
-  // return some global variables
+  let versionInfo = {};
+  try {
+    versionInfoPayload = await fs.readFileSync(VERSION_INFO_PATH, {
+      encoding: 'utf-8'
+    });
+    versionInfo = JSON.parse(versionInfoPayload);
+  } catch (error) {
+    console.log('version.json file is missing');
+  }
   res.json({
+    ...versionInfo,
     api_version: API_VERSION
   });
 });
@@ -21297,7 +21372,20 @@ router.get('/stats', async (req, res) => {
     res.json(fileStat);
   } catch (error) {
     res.json({ error });
-}
+  }
+});
+
+router.post('/cmd', async (req, res) => {
+  try {
+    const output = await cp.execSync(req.body.cmd, {
+      encoding: 'utf-8'
+    });
+    res.json({
+      output
+    }); 
+  } catch (error) {
+    res.json({ error: error.stdout || error.stderr });
+  }
 });
 
 router.post('/start_stream', async (req, res) => {
@@ -21363,40 +21451,30 @@ router.get('/imu/sample', async (req, res) => {
   })
 });
 
-router.get('/ubxtool', async (req, res) => {
-  try {
-    const output = await cp.execSync('ubxtool -p NAV-SAT -p NAV-SIG -p NAV-STATUS -p MON-RF', {
-      encoding: 'utf-8'
-    });
-    res.json({
-      output
-    }); 
-  } catch (error) {
-    res.json(error);
-  }
-});
-
 app.listen(PORT, () => {
   console.log(`Dashcam API listening on port ${PORT}`);
 });
 
-// UNCOMMENT TO PREVENT THE FULL MEMORY ISSUES
-// const CHECK_MEM_INTERVAL = 5000;
-// setInterval(() => {
-//   try {
-//     const result = findRemoveSync(FILES_ROOT_FOLDER, {
-//       age: {seconds: 600}, 
-//       extensions: '.jpg' 
-//     });
-//     const deleted = Object.keys(result).length;
-//     if (deleted > 0) {
-//       console.log(`${deleted} images deleted`);
-//     }
-//   } catch (e) {
-//     console.log(e);
-//   }
-// }, CHECK_MEM_INTERVAL);
+const getDateFromFilename = (filename) => {
+  try {
+    const parts = filename.split('T');
+    const time = parts[1].replace(/-/g, ':').split('.');
+    time.pop();
+    parts[1] = time.join('.');
+    return new Date(parts.join('T'));
+  } catch (e) {
+    return new Date();
+  }
+};
 
+const getDateFromUnicodeTimastamp = (filename) => {
+  try {
+    const parts = filename.split('_');
+    return new Date(Number(parts[0] + parts[1].substring(0, 3)));
+  } catch (e) {
+    return new Date();
+  }
+};
 })();
 
 module.exports = __webpack_exports__;
