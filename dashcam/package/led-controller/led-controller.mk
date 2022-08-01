@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LED_CONTROLLER_VERSION = 2443a0b90587acfbfe3e162de3b7c413e4fd2b27
+LED_CONTROLLER_VERSION = 1e01a55aaecc68df1e138dfd56f47833cd6ae031
 LED_CONTROLLER_SITE = ssh://git@bitbucket.org/chr1sniessl/capable_camera_firmware-mirror.git
 LED_CONTROLLER_SITE_METHOD = git
 LED_CONTROLLER_CONF_OPTS = -DCMAKE_INSTALL_PREFIX="/opt/dashcam" \
