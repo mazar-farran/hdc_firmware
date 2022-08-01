@@ -21222,9 +21222,10 @@ const fs = __nccwpck_require__(7147);
 const cp = __nccwpck_require__(2081);
 
 const PORT = 5000;
-const API_VERSION = 0.5;
+const API_VERSION = 0.7;
 const FILES_ROOT_FOLDER = __dirname + '/../../../tmp/recording';
 const VERSION_INFO_PATH = __dirname + '/../../../etc/version.json';
+const LED_CONFIG_PATH = __dirname + '/../../../tmp/led.json';
 
 const app = express();
 
@@ -21237,6 +21238,27 @@ const router = express.Router();
 
 app.use('/api/1', router);
 
+const COLORS = {
+  RED: {
+    red: 255,
+    blue: 0,
+    green: 0,
+    on: true,
+  },
+  YELLOW: {
+    red: 255,
+    blue: 0,
+    green: 255,
+    on: true,
+  },
+  GREEN: {
+    red: 0,
+    blue: 0,
+    green: 255,
+    on: true,
+  },
+};
+
 router.get('/recordings', async (req, res) => {
   try {
     const files = await fs.readdirSync(FILES_ROOT_FOLDER);
@@ -21247,7 +21269,10 @@ router.get('/recordings', async (req, res) => {
           return false;
         }
         const t = getDateFromUnicodeTimastamp(filename).getTime();
-        if ((req.query.since && t < req.query.since) || (req.query.until && t > req.query.until)) {
+        if (
+          (req.query.since && t < req.query.since) ||
+          (req.query.until && t > req.query.until)
+        ) {
           return false;
         }
         nameTimeMap[filename] = t;
@@ -21256,8 +21281,8 @@ router.get('/recordings', async (req, res) => {
       .map(filename => {
         return {
           path: filename,
-          date: nameTimeMap[filename]
-        }
+          date: nameTimeMap[filename],
+        };
       });
     res.json(imgFiles);
   } catch (error) {
@@ -21275,7 +21300,10 @@ router.get('/imu', async (req, res) => {
           return false;
         }
         const t = getDateFromFilename(filename).getTime();
-        if ((req.query.since && t < req.query.since) || (req.query.until && t > req.query.until)) {
+        if (
+          (req.query.since && t < req.query.since) ||
+          (req.query.until && t > req.query.until)
+        ) {
           return false;
         }
         nameTimeMap[filename] = t;
@@ -21284,8 +21312,8 @@ router.get('/imu', async (req, res) => {
       .map(filename => {
         return {
           path: filename,
-          date: nameTimeMap[filename]
-        }
+          date: nameTimeMap[filename],
+        };
       });
     res.json(imuFiles);
   } catch (error) {
@@ -21301,27 +21329,31 @@ router.get('/gps', async (req, res) => {
       files.pop();
     }
     const nameTimeMap = {};
-    const gpsFiles = files
-      .filter(filename => {
-        if (filename.indexOf('.json') === -1) {
-          return false;
-        }
-        const t = getDateFromFilename(filename).getTime();
-        if ((req.query.since && t < req.query.since) || (req.query.until && t > req.query.until)) {
-          return false;
-        }
-        nameTimeMap[filename] = t;
-        return true;
-      });
-    
+    const gpsFiles = files.filter(filename => {
+      if (filename.indexOf('.json') === -1) {
+        return false;
+      }
+      const t = getDateFromFilename(filename).getTime();
+      if (
+        (req.query.since && t < req.query.since) ||
+        (req.query.until && t > req.query.until)
+      ) {
+        return false;
+      }
+      nameTimeMap[filename] = t;
+      return true;
+    });
+
     const gpsFilesWithStat = [];
     for (let filename of gpsFiles) {
-      const fileStat = await fs.statSync(FILES_ROOT_FOLDER + '/gps/' + filename);
+      const fileStat = await fs.statSync(
+        FILES_ROOT_FOLDER + '/gps/' + filename,
+      );
       gpsFilesWithStat.push({
         path: filename,
         date: nameTimeMap[filename],
-        size: fileStat.size
-      })
+        size: fileStat.size,
+      });
     }
     res.json(gpsFilesWithStat);
   } catch (error) {
@@ -21342,8 +21374,10 @@ router.get('/init', async (req, res) => {
     await cp.execSync(`timedatectl set-time ${timeToSet[0]}`);
     await cp.execSync(`timedatectl set-time ${timeToSet[1]}`);
 
+    updateLED(COLORS.GREEN);
+
     res.json({
-      output: 'done'
+      output: 'done',
     });
   } catch (error) {
     res.json({ error });
@@ -21354,7 +21388,7 @@ router.get('/info', async (req, res) => {
   let versionInfo = {};
   try {
     versionInfoPayload = await fs.readFileSync(VERSION_INFO_PATH, {
-      encoding: 'utf-8'
+      encoding: 'utf-8',
     });
     versionInfo = JSON.parse(versionInfoPayload);
   } catch (error) {
@@ -21362,13 +21396,15 @@ router.get('/info', async (req, res) => {
   }
   res.json({
     ...versionInfo,
-    api_version: API_VERSION
+    api_version: API_VERSION,
   });
 });
 
 router.get('/stats', async (req, res) => {
   try {
-    const fileStat = await fs.statSync(FILES_ROOT_FOLDER + '/' + req.query.name);
+    const fileStat = await fs.statSync(
+      FILES_ROOT_FOLDER + '/' + req.query.name,
+    );
     res.json(fileStat);
   } catch (error) {
     res.json({ error });
@@ -21378,11 +21414,11 @@ router.get('/stats', async (req, res) => {
 router.post('/cmd', async (req, res) => {
   try {
     const output = await cp.execSync(req.body.cmd, {
-      encoding: 'utf-8'
+      encoding: 'utf-8',
     });
     res.json({
-      output
-    }); 
+      output,
+    });
   } catch (error) {
     res.json({ error: error.stdout || error.stderr });
   }
@@ -21392,8 +21428,7 @@ router.post('/start_stream', async (req, res) => {
   try {
     // const streamUrl = await cp.execSync('command to execute the video stream and get the URL back').toString();
     res.json('http://192.168.0.10/test.mjpeg');
-  } 
-  catch (error) {
+  } catch (error) {
     res.json(error);
   }
 });
@@ -21402,60 +21437,106 @@ router.post('/stop_stream', async (req, res) => {
   try {
     //const streamUrl = await cp.execSync('command to stop the video stream and get the URL back').toString();
     res.json('http://192.168.0.10/test.mjpeg');
-  } 
-  catch (error) {
+  } catch (error) {
     res.json(error);
   }
 });
 
 router.get('/gps/sample', async (req, res) => {
   res.json({
-    "age": 98,
-    "timestamp": "2022-05-04T00:49:31.800Z",
-    "longitude": -70.9298776,
-    "latitude": 42.9783255,
-    "height": 28.7600021,
-    "heading": 311.197052,
-    "speed": 0.0200000014,
-    "velocity": [
-      0.0130000002,
-      -0.0150000005,
-      0.018000001
-    ],
-    "satellite_count": 14,
-    "fix_type": 3,
-    "flags": [
-      1,
-      234,
-      0
-    ],
-    "dop": 1.81999993
+    age: 98,
+    timestamp: '2022-05-04T00:49:31.800Z',
+    longitude: -70.9298776,
+    latitude: 42.9783255,
+    height: 28.7600021,
+    heading: 311.197052,
+    speed: 0.0200000014,
+    velocity: [0.0130000002, -0.0150000005, 0.018000001],
+    satellite_count: 14,
+    fix_type: 3,
+    flags: [1, 234, 0],
+    dop: 1.81999993,
   });
 });
 
 router.get('/imu/sample', async (req, res) => {
   res.json({
-    "age": 362,
-    "received_at": 1107921,
-    "temperature": 20.2143707,
-    "accelerometer": [
-      -0.008544921875,
-      0.001220703125,
-      1.013671875
-    ],
-    "gyroscope": [
-      -0.1220703125,
-      -0.48828125,
-      0.42724609375
-    ]
-  })
+    age: 362,
+    received_at: 1107921,
+    temperature: 20.2143707,
+    accelerometer: [-0.008544921875, 0.001220703125, 1.013671875],
+    gyroscope: [-0.1220703125, -0.48828125, 0.42724609375],
+  });
 });
 
 app.listen(PORT, () => {
   console.log(`Dashcam API listening on port ${PORT}`);
+
+  let lastimg = '';
+
+  setInterval(async () => {
+    try {
+      const ubxtoolOutput = await cp.execSync('ubxtool -p NAV-PVT | grep fix', {
+        encoding: 'utf-8',
+      });
+      const imgOutput = await cp.execSync('ls /tmp/recording | tail -2', {
+        encoding: 'utf-8',
+      });
+      let gpsLED = COLORS.RED;
+      if (ubxtoolOutput.indexOf('fixType 3') !== -1) {
+        gpsLED = COLORS.GREEN;
+      } else if (ubxtoolOutput.indexOf('fixType 2') !== -1) {
+        gpsLED = COLORS.YELLOW;
+      }
+
+      const imgLED = imgOutput !== lastimg ? COLORS.GREEN : COLORS.RED;
+
+      console.log('Lights updated');
+      updateLED(null, gpsLED, imgLED);
+      lastimg = imgOutput;
+    } catch (e) {
+      console.log('Interval error', e);
+    }
+  }, 3000);
+
+  updateLED(COLORS.YELLOW, COLORS.RED, COLORS.RED);
 });
 
-const getDateFromFilename = (filename) => {
+const updateLED = async (first, second, third) => {
+  try {
+    let leds = [
+      { index: 0, ...COLORS.RED },
+      { index: 1, ...COLORS.RED },
+      { index: 2, ...COLORS.RED },
+    ];
+    try {
+      const ledPayload = await fs.readFileSync(LED_CONFIG_PATH, {
+        encoding: 'utf-8',
+      });
+      leds = JSON.parse(ledPayload).leds;
+    } catch (e) {
+      console.log('No file for LED. Creating one');
+    }
+
+    const one = first ? { ...leds[0], ...first } : leds[0];
+    const two = second ? { ...leds[1], ...second } : leds[1];
+    const three = third ? { ...leds[2], ...third } : leds[2];
+
+    await fs.writeFileSync(
+      LED_CONFIG_PATH,
+      JSON.stringify({
+        leds: [one, two, three],
+      }),
+      {
+        encoding: 'utf-8',
+      },
+    );
+  } catch (e) {
+    console.log('Error updating LEDs', e);
+  }
+};
+
+const getDateFromFilename = filename => {
   try {
     const parts = filename.split('T');
     const time = parts[1].replace(/-/g, ':').split('.');
@@ -21467,7 +21548,7 @@ const getDateFromFilename = (filename) => {
   }
 };
 
-const getDateFromUnicodeTimastamp = (filename) => {
+const getDateFromUnicodeTimastamp = filename => {
   try {
     const parts = filename.split('_');
     return new Date(Number(parts[0] + parts[1].substring(0, 3)));
@@ -21475,6 +21556,7 @@ const getDateFromUnicodeTimastamp = (filename) => {
     return new Date();
   }
 };
+
 })();
 
 module.exports = __webpack_exports__;
