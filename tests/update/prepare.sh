@@ -90,7 +90,7 @@ do
   fi 
 
   echo "Building update bundle #${ii}."
-  (cd ${OUTPUT_DIR} && make)
+  (cd ${OUTPUT_DIR} && make 2>1 1>/dev/null)
   cp ${OUTPUT_DIR}/target/etc/${VERSION_FILE} ${WORK_DIR}/${ii}.${VERSION_FILE}
   cp ${OUTPUT_DIR}/images/${UPDATE_FILE} ${WORK_DIR}/${ii}.${UPDATE_FILE}
 done
