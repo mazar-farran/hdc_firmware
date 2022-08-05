@@ -16,6 +16,8 @@ CAMERA_BRIDGE_DEPENDENCIES = boost libcamera jpeg-turbo json-for-modern-cpp
 CAMERA_BRIDGE_SUBDIR = camera
 
 define CAMERA_BRIDGE_INSTALL_INIT_SYSTEMD
+	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-bridge.timer \
+		$(TARGET_DIR)/usr/lib/systemd/system/camera-bridge.timer
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-bridge.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/camera-bridge.service
 endef
