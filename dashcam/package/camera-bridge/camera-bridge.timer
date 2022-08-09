@@ -2,7 +2,7 @@
 Description=Timer to start camera-bridge
 
 [Timer]
-OnStartupSec=5min
+OnStartupSec=30sec
 
 [Install]
 WantedBy=timers.target
