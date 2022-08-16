@@ -96,7 +96,8 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
   python3 \
   cmake \
   curl \
-  jq
+  jq \
+  qtbase5-dev
 
 if [[ ${INSTALL_OPTIONAL} == "true" ]]; then
   echo -e "\nInstalling optional packages.\n"
