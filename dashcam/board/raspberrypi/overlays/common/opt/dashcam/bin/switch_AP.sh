@@ -12,5 +12,5 @@ systemctl restart systemd-networkd
 systemctl restart hostapd
 systemctl restart dnsmasq
 
-rm /opt/dashcam/network_mode.txt
-echo "AP" > /opt/dashcam/network_mode.txt
+rm /opt/dashcam/network-mode.txt
+echo "AP" > /opt/dashcam/network-mode.txt
