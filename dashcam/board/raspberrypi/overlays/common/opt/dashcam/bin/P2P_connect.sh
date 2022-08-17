@@ -5,7 +5,7 @@
 
 found_result=0
 
-if [-z "$1"]
+if [ -z "$1" ]
 then
   echo "You need to provide a MAC Address for the device!"
 fi
@@ -18,19 +18,25 @@ do
   probe_result=$(wpa_cli -i wlan0 p2p_peers) 
   echo "Finding a match..."
   for result in $probe_result
-    if [$result == $1]
+  do
+    if [ $result == $1 ]
     then
       echo "Match found"
       found_result=1
       break
     fi
+  done
+  if [ $found_result -eq 1 ]
+  then
+    break
+  fi
   echo "No match found. Waiting and retrying"
   sleep 3
 done
 
-if [$found_result -eq 0]
+if [ $found_result -eq 0 ]
 then
   echo "No match. Retry "
 else
-  wpa_cli -i wlan0 p2p_connect $1
+  wpa_cli -i wlan0 p2p_connect $1 pbc
 fi
