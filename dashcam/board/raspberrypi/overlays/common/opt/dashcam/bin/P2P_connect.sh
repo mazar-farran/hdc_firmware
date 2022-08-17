@@ -38,5 +38,16 @@ if [ $found_result -eq 0 ]
 then
   echo "No match. Retry "
 else
-  wpa_cli -i wlan0 p2p_connect $1 pbc
+  for CHECK in 1 2 3 4 5
+  do
+    connect_result=$(wpa_cli -i wlan0 p2p_connect $1 pbc)
+    if [ $connect_result == "FAIL" ]
+    then
+      echo "Failed to connect. Retrying..."
+    else
+      echo "Success!"
+      break
+    fi
+    sleep 3
+  done
 fi
