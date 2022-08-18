@@ -27,6 +27,12 @@ gpu_mem_1024=100
 dtoverlay=miniuart-bt
 enable_uart=1
 
+# IMU
+dtoverlay=spi0-1cs
+
+# LORA
+dtoverlay=spi1-1cs,cs0_pin=18
+
 # GNSS configurations
 dtoverlay=uart5
 gpio=5=op,dl
