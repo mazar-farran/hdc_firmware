@@ -71,7 +71,7 @@ info() {
 # Load overlay module
 modprobe overlay
 if [ $? -ne 0 ]; then
-  fail "ERROR: missing overlay kernel module"s
+  fail "ERROR: missing overlay kernel module"
 fi
 
 # Mount /proc
