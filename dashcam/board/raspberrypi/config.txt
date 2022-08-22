@@ -56,6 +56,9 @@ dtparam=watchdog=on
 # 64-bit.  As such, don't delete this.
 #arm_64bit=1
 
+#Set minimum frequency so our image bus can push 10 fps
+arm_freq_min=1000
+
 [cm4]
 # {RPi} 
 # Enable host mode on the 2711 built-in XHCI USB controller.
