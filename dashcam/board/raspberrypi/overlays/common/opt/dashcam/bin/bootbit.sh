@@ -158,3 +158,5 @@ cat /proc/mounts | grep /mnt/data > /dev/null 2>&1
 # This resets the boot counter for this slot group.
 rauc status mark-good
 wget -O - --post-data "healthy" http://localhost:${OU_PORT}/bootstate > /dev/null 2>&1
+touch /opt/dashcam/READY
+echo "BOOT TEST PASSES"
