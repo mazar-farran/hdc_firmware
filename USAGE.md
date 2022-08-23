@@ -18,6 +18,8 @@ The most likely to be changed options are listed here.
 
 --live Output message responses to stdout.
 --verbose 0 quiet, 1 error (default), 2 warn, 3 info, 4 debug (outputs things like rssi and radio configurations) These messages are logged to stderr.
+--input-path directory to watch for commands, defaults to /tmp/lorawan
+--output-path directory to write responses to, defaults to /tmp/lorawan, though the systemd service sets it to /mnt/data/lorawan
 
 # Scripts
 
