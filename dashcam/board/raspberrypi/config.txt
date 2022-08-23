@@ -57,7 +57,7 @@ dtparam=watchdog=on
 #arm_64bit=1
 
 #Set minimum frequency so our image bus can push 10 fps
-arm_freq_min=1000
+arm_freq_min=1100
 
 [cm4]
 # {RPi} 
