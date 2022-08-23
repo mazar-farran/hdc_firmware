@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/opt/dashcam/bin
-ExecStart=/opt/dashcam/bin/lorawan-logger
+ExecStart=/opt/dashcam/bin/lorawan-logger --output-path /mnt/data/lorawan
 Restart=always
 
 [Install]
