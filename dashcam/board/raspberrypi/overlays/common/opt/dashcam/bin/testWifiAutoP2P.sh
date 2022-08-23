@@ -3,7 +3,7 @@
 # Debug/test functionality to make sure all associated
 # services can go down and back up.
 
-resultFile="/tmp/results.txt"
+resultFile="/mnt/data/WifiDirRes.txt"
 
 touch $resultFile
 echo "Switching to P2P" >> $resultFile

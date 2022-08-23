@@ -29,7 +29,7 @@ do
       break
     fi    
   done
-  if [ $connected eq 0 ]
+  if [ $connected -eq 0 ]
   then
     echo "Retrying..."
     sleep 5
@@ -37,7 +37,7 @@ do
     break
   fi
 done
-if [ $connected eq 1 ]
+if [ $connected -eq 1 ]
 then  
   echo "Connected to $con_addr"
   touch /tmp/CONNECT_SUCCESS
