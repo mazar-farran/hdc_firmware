@@ -4,7 +4,9 @@
 # a particular mac address. Instead it connects to any that is available
 
 wpa_cli -i wlan0 set config_methods virtual_push_button
+sleep 2
 wpa_cli -i wlan0 p2p_find
+sleep 2
 
 connected=0
 con_addr=""
@@ -38,4 +40,8 @@ done
 if [ $connected eq 1 ]
 then  
   echo "Connected to $con_addr"
+  touch /tmp/CONNECT_SUCCESS
+else
+  echo "Failed to find a connection"
+  touch /tmp/CONNECT_FAIL
 fi
