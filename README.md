@@ -84,6 +84,42 @@ script.  Relative to the `output` directory and assuming the device will mount t
 
 Do note that steps 2 and 3 can be performed using the [scripts/rebuild.sh](./scripts/rebuild.sh) script.
 
+## USB Updates
+
+### Process
+USB updates were added as of 08/23/2022.  To do a USB update, do the following: 
+
+1. Acquire a USB flash drive that's formatted with a FAT32 root file system.
+1. Add a directory named "hivemapper_update" to the root of the flash drive.
+1. Add the rauc bundle (*.raucb) to the previously made directory.
+    1. The naming of the update doesn't matter.  The update routine will look 
+    specifically for the .raucb extension.
+    1. Only place one file ending with the extension .raucb in the update directory.
+    1. If the storage of multiple .raucb files is desired, add an additional extension to
+    the unused files, i.e. ".old" or ".other".  This will allow the update infrastructure
+    to find the appropriate update file.
+1. Connect the flash drive to the hardware.
+1. Power cycle the device.
+1. Wait a couple minutes to ensure the updates have been completed.  In this time period
+the LED's should turn off then back on a couple times.
+
+### Inter-workings
+Below is the processes that's completed when doing a USB update:
+
+1. On startup, systemd starts a script to do the update
+1. The script looks in all the USB mount points for a directory called "hivemapper_update".
+1. If the script finds the directory, it looks in the directory for a single
+update bundle (.raucb) file.
+1. If one update bundle was found, the script updates the system time based on the
+start date of the update certificate.  It then gets the checksum for the current
+root file system and the update bundle.
+1. If the checksums don't match, the script will move the update file to the
+/tmp directory and call "rauc install" on it
+1. If the install succeeds, the system is rebooted.
+
+NOTE: If any of the steps above fails, an error will be output and the update process with exit
+
+
 ## Working With the Target
 
 ### Getting a Console
