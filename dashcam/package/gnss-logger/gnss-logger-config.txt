@@ -1,4 +1,4 @@
-path = /tmp/recording/gps
+path = /mnt/data/gps
 extension = json
 maxSize = 10000
 snr = false
