@@ -196,6 +196,17 @@ The error message has the solution: run the `ssh-keygen` command with the `-R` o
 ssh-keygen -f "/home/cshaw/.ssh/known_hosts" -R "192.168.1.10"
 ```
 
+You can also ease ssh access with these two configuration options in .ssh/config:
+
+```
+Host 192.168.0.10
+    user root
+    StrictHostKeyChecking no
+
+```
+Bear in mind that these options will apply to any host 192.168.0.10, not just the dashcam.
+
+
 ### Flashing the Target is Stuck "Waiting for BCM2835/6/7/2711..."
 This is the RPi bootloader.  Do the following:
 1. Ensure the pin jumper is installed.
