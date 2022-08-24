@@ -7,7 +7,7 @@ ResultFile="/mnt/data/wifi_results.txt"
 
 touch $ResultFile 
 echo "Switching to P2P" >> $ResultFile
-sh /opt/dashcam/bin/switch_P2P.sh >> $ResultFile
+sh /opt/dashcam/bin/network/wifi_switch_P2P.sh >> $ResultFile
 sleep 15
 echo "Switching back" >> $ResultFile
-sh /opt/dashcam/bin/switch_AP.sh >> $ResultFile
+sh /opt/dashcam/bin/network/wifi_switch_AP.sh >> $ResultFile
