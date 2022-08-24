@@ -4,12 +4,22 @@
 # a particular mac address. Instead it connects to any that is available
 
 wpa_cli -i wlan0 set config_methods virtual_push_button
+<<<<<<< HEAD
 wpa_cli -i wlan0 p2p_find
+=======
+sleep 2
+wpa_cli -i wlan0 p2p_find
+sleep 2
+>>>>>>> 1dd7c26c2a71b0e613d12d87e071b1af9bb04d13
 
 connected=0
 con_addr=""
 
+<<<<<<< HEAD
 for CHECK in 1 2 3 4 5 6 7 8 9 10
+=======
+for CHECK in 1 2 3 4 5 6 7 8 9 10 11 12
+>>>>>>> 1dd7c26c2a71b0e613d12d87e071b1af9bb04d13
 do
   probe_result=$(wpa_cli -i wlan0 p2p_peers) 
   echo "Finding a match..."
@@ -27,15 +37,32 @@ do
       break
     fi    
   done
+<<<<<<< HEAD
   if [ $connected eq 0 ]
   then
     echo "Retrying..."
     sleep 3
+=======
+  if [ $connected -eq 0 ]
+  then
+    echo "Retrying..."
+    sleep 5
+>>>>>>> 1dd7c26c2a71b0e613d12d87e071b1af9bb04d13
   else
     break
   fi
 done
+<<<<<<< HEAD
 if [ $connected eq 1 ]
 then  
   echo "Connected to $con_addr"
+=======
+if [ $connected -eq 1 ]
+then  
+  echo "Connected to $con_addr"
+  touch /tmp/CONNECT_SUCCESS
+else
+  echo "Failed to find a connection"
+  touch /tmp/CONNECT_FAIL
+>>>>>>> 1dd7c26c2a71b0e613d12d87e071b1af9bb04d13
 fi

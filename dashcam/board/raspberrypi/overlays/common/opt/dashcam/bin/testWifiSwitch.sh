@@ -3,9 +3,11 @@
 # Debug/test functionality to make sure all associated
 # services can go down and back up.
 
-touch /tmp/results.txt
-echo "Switching to P2P" >> /media/usb0/results.txt
-sh /opt/dashcam/bin/switch_P2P.sh >> /media/usb0/results.txt
+ResultFile="/mnt/data/wifi_results.txt"
+
+touch $ResultFile 
+echo "Switching to P2P" >> $ResultFile
+sh /opt/dashcam/bin/switch_P2P.sh >> $ResultFile
 sleep 15
-echo "Switching back" >> /media/usb0/results.txt
-sh /opt/dashcam/bin/switch_AP.sh >> /media/usb0/results.txt
+echo "Switching back" >> $ResultFile
+sh /opt/dashcam/bin/switch_AP.sh >> $ResultFile
