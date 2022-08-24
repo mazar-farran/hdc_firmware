@@ -160,3 +160,6 @@ rauc status mark-good
 wget -O - --post-data "healthy" http://localhost:${OU_PORT}/bootstate > /dev/null 2>&1
 touch /opt/dashcam/READY
 echo "BOOT TEST PASSES"
+
+# Configure cpu to boost
+echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
