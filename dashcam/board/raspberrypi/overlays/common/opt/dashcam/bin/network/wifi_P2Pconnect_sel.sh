@@ -46,6 +46,7 @@ else
       echo "Failed to connect. Retrying..."
     else
       echo "Success!"
+      wpa_cli -i wlan0 p2p_connect $1 pbc
       break
     fi
     sleep 3
