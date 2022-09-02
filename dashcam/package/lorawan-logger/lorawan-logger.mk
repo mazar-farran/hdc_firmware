@@ -15,6 +15,8 @@ endef
 define LORAWAN_LOGGER_INSTALL_INIT_SYSTEMD
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/lorawan-logger/lorawan-logger.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/lorawan-logger.service
+	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/lorawan-logger/lorawan.conf \
+		$(TARGET_DIR)/opt/dashcam/cfg/lorawan.conf
 endef
 
 $(eval $(generic-package))
