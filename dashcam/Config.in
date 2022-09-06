@@ -1,6 +1,7 @@
 source "$BR2_EXTERNAL_DASHCAM_PATH/package/camera-api/Config.in"
 source "$BR2_EXTERNAL_DASHCAM_PATH/package/camera-bridge/Config.in"
 source "$BR2_EXTERNAL_DASHCAM_PATH/package/camera-node/Config.in"
+source "$BR2_EXTERNAL_DASHCAM_PATH/package/camera-scripts/Config.in"
 source "$BR2_EXTERNAL_DASHCAM_PATH/package/gnss-logger/Config.in"
 source "$BR2_EXTERNAL_DASHCAM_PATH/package/gpsd-and-config/Config.in"
 source "$BR2_EXTERNAL_DASHCAM_PATH/package/imu-logger/Config.in"
