@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-CAMERA_BRIDGE_VERSION = 049feeefa70c4f4a0658fb35a428cdd7480e67b0
+CAMERA_BRIDGE_VERSION = 7e5856e
 CAMERA_BRIDGE_SITE = ssh://git@bitbucket.org/chr1sniessl/capable_camera_firmware-mirror.git
 CAMERA_BRIDGE_SITE_METHOD = git
 CAMERA_BRIDGE_CONF_OPTS = -DENABLE_OPENCV=0 -DCMAKE_INSTALL_PREFIX="/opt/dashcam"\
@@ -20,6 +20,8 @@ define CAMERA_BRIDGE_INSTALL_INIT_SYSTEMD
 		$(TARGET_DIR)/usr/lib/systemd/system/camera-bridge.timer
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-bridge.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/camera-bridge.service
+	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-preview.service \
+		$(TARGET_DIR)/usr/lib/systemd/system/camera-preview.service
 endef
 
 $(eval $(cmake-package))

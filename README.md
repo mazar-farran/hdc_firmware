@@ -45,7 +45,7 @@ between production and development builds.  See section below, but
 `raspberrypicm4io_dev_dashcam_defconfig` should be considered the default option for developers
 and `raspberrypicm4io_prod_dashcam_defconfig` for production use.
     ```
-    make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_dev_dashcam_defconfig
+    make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
     ```
 
 3. Perform the build.  With no ccache a rebuild should take about 30-40 minutes.
