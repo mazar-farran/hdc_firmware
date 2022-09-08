@@ -13,6 +13,8 @@ fi
 wpa_cli -i wlan0 set config_methods virtual_push_button
 wpa_cli -i wlan0 p2p_find
 
+connected=0
+
 for CHECK in 1 2 3 4 5 6 7 8 9 10
 do
   mac_to_connect=""
@@ -52,8 +54,19 @@ else
     else
       echo "Success! Connecting to $mac_to_connect"
       wpa_cli -i wlan0 p2p_connect $mac_to_connect pbc
+      connected=1
       break
     fi
     sleep 3
   done
 fi
+
+if [ $connected -eq 1 ]
+then  
+  echo "Connected to $con_addr"
+  touch /tmp/CONNECT_SUCCESS
+else
+  echo "Failed to find a connection"
+  touch /tmp/CONNECT_FAIL
+fi
+

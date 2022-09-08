@@ -32,6 +32,6 @@ then
   echo "Success!" >> $resultFile
 else
   echo "Failed! Switching back" >> $resultFile
-  sh /opt/dashcam/bin/network/switch_AP.sh >> $resultFile
+  sh /opt/dashcam/bin/network/wifi_switch_AP.sh >> $resultFile
 fi
 
