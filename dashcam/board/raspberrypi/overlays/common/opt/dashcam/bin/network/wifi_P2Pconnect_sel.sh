@@ -7,7 +7,7 @@ found_result=0
 
 if [ -z "$1" ]
 then
-  echo "You need to provide a MAC Address for the device!"
+  echo "You need to provide a Device Name to connect to!"
 fi
 
 wpa_cli -i wlan0 set config_methods virtual_push_button
@@ -15,14 +15,19 @@ wpa_cli -i wlan0 p2p_find
 
 for CHECK in 1 2 3 4 5 6 7 8 9 10
 do
+  mac_to_connect=""
   probe_result=$(wpa_cli -i wlan0 p2p_peers) 
   echo "Finding a match..."
-  for result in $probe_result
+  for macaddr in $probe_result
   do
-    if [ $result == $1 ]
+    command="wpa_cli -i wlan0 p2p_peer $macaddr"
+    echo "Filtering on command: $command"
+    devIDLine=$(wpa_cli -i wlan0 p2p_peer $macaddr | grep -E "device_name=$1")
+    if [ -n "$devIDLine" ]
     then
       echo "Match found"
       found_result=1
+      mac_to_connect=$macaddr
       break
     fi
   done
@@ -40,13 +45,13 @@ then
 else
   for CHECK in 1 2 3 4 5
   do
-    connect_result=$(wpa_cli -i wlan0 p2p_connect $1 pbc)
+    connect_result=$(wpa_cli -i wlan0 p2p_connect $mac_to_connect pbc)
     if [ $connect_result == "FAIL" ]
     then
-      echo "Failed to connect. Retrying..."
+      echo "Failed to connect to $mac_to_connect. Retrying..."
     else
-      echo "Success!"
-      wpa_cli -i wlan0 p2p_connect $1 pbc
+      echo "Success! Connecting to $mac_to_connect"
+      wpa_cli -i wlan0 p2p_connect $mac_to_connect pbc
       break
     fi
     sleep 3

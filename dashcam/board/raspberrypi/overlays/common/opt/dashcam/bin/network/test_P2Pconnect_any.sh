@@ -5,6 +5,15 @@
 
 resultFile="/mnt/data/wifi_results.txt"
 
+if [ -f "/tmp/CONNECT_SUCCESS" ]
+then
+  rm /tmp/CONNECT_SUCCESS
+fi
+if [ -f "/tmp/CONNECT_FAIL" ]
+then
+  rm /tmp/CONNECT_FAIL
+fi
+
 touch $resultFile
 echo "Switching to P2P" >> $resultFile
 sh /opt/dashcam/bin/network/wifi_switch_P2P.sh >> $resultFile
