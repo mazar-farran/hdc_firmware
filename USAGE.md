@@ -32,7 +32,7 @@ No options, this script resizes the data (/dev/mmcblk0p4) partition and filesyst
 
 The /opt/dashcam/bin/network directory has ten different scripts useful for managing what type of network endpoint is available.
 
-###Basic switching utilities
+### Basic switching utilities
 
 1. wifi\_switch\_AP.sh - Bring up the Access point configuration.
 
@@ -47,7 +47,7 @@ Generated /tmp/CONNECT\_SUCCESS on success or /tmp/CONNECT\_FAILURE on failure.
 1. wifi_P2Prmgroup.sh - Remove the current P2P state and group information. Necessary if the device disconnected before attempting a reconnection.
 This brings the device into the same networking state as though you ran wifi\_switch\_P2P.sh after being in AP mode.
 
-###Advanced tests and scripts
+### Advanced tests and scripts
 
 All of these scripts invoke the previous four, so if you modify any of those, take care to update these!
 
@@ -81,3 +81,12 @@ To view the video, you can access http://192.168.0.10:9001/?action=stream
 
 TODO: Jitter from the main feed writing to disk can make the video choppy. 
 Redirecting the normal image stream to /tmp/recording during a preview session may mitigate this.
+
+## 2nd drive recording and waiting for GNSS Lock
+
+config.json contains configuration parameters for the 2nd recording location.
+
+"output2" - Location of where else to record frames. By default this is "/media/usb0/recording/"
+"minfreespace2" - Minimum free space to leave on the 2nd location. By default this is 32000000
+"gpsLockCheckDir" - Where to check for the GPS to be ready. If unspecified, it doesn't look and records images in the 2nd location immediately. 
+The default location of gnss to write its ready file is "/tmp/GPS_READY" So gpsLockCheckDir should be set to that if gnss-logger configuration is unchanged.
