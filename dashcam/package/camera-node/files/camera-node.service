@@ -9,5 +9,8 @@ WorkingDirectory=/opt/dashcam/bin
 ExecStart=node dashcam-api.js
 Restart=always
 
+StandardOutput=append:/mnt/data/camera-node.log
+StandardError=append:/mnt/data/camera-node.log
+
 [Install]
 WantedBy=multi-user.target
