@@ -11,7 +11,7 @@ Before=lorawan-logger.service
 
 [Service]
 Type=oneshot
-ExecStart=/opt/dashcam/bin/resize-data-partition.sh
+ExecStart=/opt/dashcam/bin/storage/resize-data-partition.sh
 
 [Install]
 WantedBy=multi-user.target

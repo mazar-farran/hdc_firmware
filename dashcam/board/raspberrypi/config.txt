@@ -45,8 +45,8 @@ dtparam=spi=on
 # Camera configurations
 dtoverlay=vc4-fkms-v3d,cma-512
 max_framebuffers=2
-
 dtoverlay=imx477
+
 
 # Enables the hardware watchdog that will reboot the system after 15 seconds
 # in case of a kernel panic.
@@ -57,7 +57,9 @@ dtparam=watchdog=on
 #arm_64bit=1
 
 #Set minimum frequency so our image bus can push 10 fps
+#Also overclock the eMMC so that we can write as close to 10 fps to it.
 arm_freq_min=1100
+#init_emmc_clock=300000000
 
 [cm4]
 # {RPi} 
