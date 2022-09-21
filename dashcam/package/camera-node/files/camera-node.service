@@ -6,7 +6,7 @@ After=network.target
 
 User=root
 WorkingDirectory=/opt/dashcam/bin
-ExecStart=camera_node.sh
+ExecStart=sh /opt/dashcam/bin/camera_node.sh
 Restart=always
 
 StandardOutput=append:/mnt/data/camera-node.log
