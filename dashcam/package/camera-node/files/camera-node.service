@@ -6,7 +6,7 @@ After=network.target
 
 User=root
 WorkingDirectory=/opt/dashcam/bin
-ExecStart=node dashcam-api.js
+ExecStart=camera_node.sh
 Restart=always
 
 StandardOutput=append:/mnt/data/camera-node.log
