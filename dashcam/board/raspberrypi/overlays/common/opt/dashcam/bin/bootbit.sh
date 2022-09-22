@@ -15,7 +15,7 @@
 
 # Right now the 64-bit build doesn't build the camera-api package (i.e.
 # capable_camera_firmware).  So make it possible to ignore that in the BIT.
-IGNORE_CCF=0
+IGNORE_CCF=1
 
 # Start by figuring out if this is the first boot after an update.
 NEW_UPDATE=$(fw_printenv UNBOOTED_UPDATE | awk -F= '{print $2}') 
@@ -158,3 +158,8 @@ cat /proc/mounts | grep /mnt/data > /dev/null 2>&1
 # This resets the boot counter for this slot group.
 rauc status mark-good
 wget -O - --post-data "healthy" http://localhost:${OU_PORT}/bootstate > /dev/null 2>&1
+touch /opt/dashcam/READY
+echo "BOOT TEST PASSES"
+
+# Configure cpu to boost
+echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor

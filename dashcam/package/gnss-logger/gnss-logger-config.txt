@@ -1,0 +1,6 @@
+path = /mnt/data/gps
+extension = json
+maxSize = 10000
+snr = false
+minMode = 2
+logDuration = 60
