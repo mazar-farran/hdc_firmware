@@ -50,11 +50,11 @@ elif [ $SIZE_VALUE -le $FLASH_SECTORS ]; then
     # Ensure no data is waiting to be written
     sync
 
-    # Resize data partition and filesystem to fill emmc
+    # Resize data partition and remake filesystem with busybox defaults
     umount $EXPAND_PARTITION
     parted $EXPAND_DEVICE resizepart 4 100%
-    resize2fs $EXPAND_PARTITION
-    fsck.ext4 -p $EXPAND_PARTITION
+    mkfs.ext4 $EXPAND_PARTITION
+    e2label $EXPAND_PARTITION data
     mount $EXPAND_PARTITION
 fi
 
