@@ -1,6 +1,6 @@
 
 echo "Stopping services"
-/opt/dashcam/bin/stop_all.sh
+/opt/dashcam/bin/stop_all_except_node.sh
 umount /dev/mmcblk0p4
 yes | mkfs.ext4 /dev/mmcblk0p4
 e2label /dev/mmcblk0p4 data
