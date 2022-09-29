@@ -84,8 +84,12 @@ cp $EMMC_RESULTS $EMMC_RESULTS_TMP
 
 SIZE_VALUE=$(get_size_value $EXPAND_PARTITION)
 echo "Initial emmc size: $SIZE_VALUE" | tee -a $EMMC_RESULTS_TMP
-PRE_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
-echo "Initial speed: $PRE_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
+
+# Skip inital speed test if partition is still tiny
+if [ $SIZE_VALUE -ge $FLASH_SECTORS ]; then
+	PRE_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
+	echo "Initial speed: $PRE_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
+fi
 
 # Check if the emmc has been fixed
 if [ -f "$EMMC_FLAG" ]; then
