@@ -64,7 +64,7 @@ emmc_speed_test()
     echo "$(echo "scale=2; $MB / $SECS" | bc)"
 }
 
-do_resize()
+do_reformat()
 {
     # Ensure no data is waiting to be written
     sync
@@ -79,43 +79,27 @@ do_resize()
     touch $EMMC_FLAG
 }
 
-CHANGED_EMMC=0
-
 # Pull the emmc_results file to preserve the log if we change the fs.
-cp $EMMC_RESULTS $EMMC_RESULT_TMP
+cp $EMMC_RESULTS $EMMC_RESULTS_TMP
 
 SIZE_VALUE=$(get_size_value $EXPAND_PARTITION)
 echo "Initial emmc size: $SIZE_VALUE" | tee -a $EMMC_RESULTS_TMP
 PRE_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
 echo "Initial speed: $PRE_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
 
-if [ $SIZE_VALUE -eq 0 ]; then
-    echo "Error while determining data size.  Unable to expand partition..." | tee -a $EMMC_RESULTS_TMP
-# Check if the emmc is still 16MB
-elif [[ $SIZE_VALUE -le $FLASH_SECTORS ]]; then
-    CHANGED_EMMC=1
-    echo "Resizing emmc" | tee -a $EMMC_RESULTS_TMP
-    do_resize
-	POST_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
-	echo "Post fix speed: $POST_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
-# Check if the emmc is slow
-elif [ $(echo "$PRE_SPEED_TEST > $MIN_EMMC_SPEED" | bc) -eq 0 ]; then
-    CHANGED_EMMC=1
-    echo "Speed test too slow, reformatting /dev/mmcblk" | tee -a $EMMC_RESULTS_TMP
-    do_resize
-	POST_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
-	echo "Post fix speed: $POST_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
-else
+# Check if the emmc has been fixed
+if [ -f "$EMMC_FLAG" ]; then
     echo "Emmc aleady fixed" | tee -a $EMMC_RESULTS_TMP
-fi
-
-
-# Output partition size
-SIZE_VALUE=$(get_size_value $EXPAND_PARTITION "-h")
-echo "Data partition is $SIZE_VALUE" | tee -a $EMMC_RESULTS_TMP
-
-# If we changed anything about the emmc, copy the results to emmc
-if [ $CHANGED_EMMC -eq 1 ]; then
+else
+    CHANGED_EMMC=1
+    echo "Reformatting $EXPAND_PARTITION" | tee -a $EMMC_RESULTS_TMP
+    do_reformat
+    POST_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
+    echo "Post fix speed: $POST_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
+    # Output partition size
+    SIZE_VALUE=$(get_size_value $EXPAND_PARTITION "-h")
+    echo "Post fix size: $SIZE_VALUE" | tee -a $EMMC_RESULTS_TMP
+    # We changed the emmc, so copy the results back to peristent storage
     cp $EMMC_RESULTS_TMP $EMMC_RESULTS
 fi
 
