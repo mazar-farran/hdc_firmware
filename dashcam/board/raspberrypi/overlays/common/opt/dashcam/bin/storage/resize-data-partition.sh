@@ -4,6 +4,11 @@
 EXPAND_DEVICE=/dev/mmcblk0
 EXPAND_PARTITION=${EXPAND_DEVICE}p4
 FLASH_SECTORS=20000
+EMMC_FLAG=/mnt/data/emmc_fixed
+EMMC_RESULTS_TMP=/root/emmc_results
+EMMC_RESULTS=/mnt/data/emmc_results
+MIN_EMMC_SPEED=15 #MB/s
+EMMC_TEST_SIZE=100 #MB
 
 get_line()
 {
@@ -53,7 +58,7 @@ emmc_speed_test()
     # Massage the output of dd into something we can do math with
     TIME_MINS=$(echo $TIME_STR | awk '{print substr($2, 1, length($2)-1)}')
     TIME_SECS=$(echo $TIME_STR | awk '{print substr($3, 1, length($3)-1)}')
-    SECS=$(echo "($TIME_MINS * 60) + $TIME_SECS" | bc)
+    SECS=$(echo "scale=2; ($TIME_MINS * 60) + $TIME_SECS" | bc)
 
     # Echo back MB/s
     echo "$(echo "scale=2; $MB / $SECS" | bc)"
@@ -70,42 +75,47 @@ do_resize()
     yes | mkfs.ext4 $EXPAND_PARTITION
     e2label $EXPAND_PARTITION data
     mount $EXPAND_PARTITION
+
+    touch $EMMC_FLAG
 }
 
 CHANGED_EMMC=0
 
-# Check if the emmc is still 16MB
+# Pull the emmc_results file to preserve the log if we change the fs.
+cp $EMMC_RESULTS $EMMC_RESULT_TMP
+
 SIZE_VALUE=$(get_size_value $EXPAND_PARTITION)
-echo "Initial emmc size: $SIZE_VALUE" | tee /root/emmc_results
+echo "Initial emmc size: $SIZE_VALUE" | tee -a $EMMC_RESULTS_TMP
+PRE_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
+echo "Initial speed: $PRE_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
+
 if [ $SIZE_VALUE -eq 0 ]; then
-    echo "Error while determining data size.  Unable to expand partition..." | tee -a /root/emmc_results
-elif [ $SIZE_VALUE -le $FLASH_SECTORS ]; then
-	CHANGED_EMMC=1
-
-    echo "Resizing emmc" | tee -a /root/emmc_results
+    echo "Error while determining data size.  Unable to expand partition..." | tee -a $EMMC_RESULTS_TMP
+# Check if the emmc is still 16MB
+elif [[ $SIZE_VALUE -le $FLASH_SECTORS ]]; then
+    CHANGED_EMMC=1
+    echo "Resizing emmc" | tee -a $EMMC_RESULTS_TMP
     do_resize
-fi
-
-#Check if the emmc is slow
-PRE_SPEED_TEST=$(emmc_speed_test 100)
-echo "Initial speed: $PRE_SPEED_TEST" | tee -a /root/emmc_results
-if [ $(echo "$PRE_SPEED_TEST > 20" | bc) -eq 0 ]; then
-	CHANGED_EMMC=1
-
-    echo "Speed test too slow, reformatting /dev/mmcblk" | tee -a /root/emmc_results
+	POST_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
+	echo "Post fix speed: $POST_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
+# Check if the emmc is slow
+elif [ $(echo "$PRE_SPEED_TEST > $MIN_EMMC_SPEED" | bc) -eq 0 ]; then
+    CHANGED_EMMC=1
+    echo "Speed test too slow, reformatting /dev/mmcblk" | tee -a $EMMC_RESULTS_TMP
     do_resize
-    POST_SPEED_TEST=$(emmc_speed_test 100)
-    echo "Post fix speed: $POST_SPEED_TEST" | tee -a /root/emmc_results
+	POST_SPEED_TEST=$(emmc_speed_test $EMMC_TEST_SIZE)
+	echo "Post fix speed: $POST_SPEED_TEST" | tee -a $EMMC_RESULTS_TMP
 else
-    echo "Emmc aleady fixed" | tee -a /root/emmc_results
+    echo "Emmc aleady fixed" | tee -a $EMMC_RESULTS_TMP
 fi
+
 
 # Output partition size
 SIZE_VALUE=$(get_size_value $EXPAND_PARTITION "-h")
-echo "Data partition is $SIZE_VALUE" | tee -a /root/emmc_results
+echo "Data partition is $SIZE_VALUE" | tee -a $EMMC_RESULTS_TMP
 
-# If we changed anything about the emmc, copy that to the emmc
+# If we changed anything about the emmc, copy the results to emmc
 if [ $CHANGED_EMMC -eq 1 ]; then
-	cat /root/emmc_results >> /mnt/data/emmc_results
+    cp $EMMC_RESULTS_TMP $EMMC_RESULTS
 fi
 
