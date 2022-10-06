@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-CAMERA_SCRIPTS_VERSION = 1dc49a9462bb77d888595558767e261c8c60c50f
+CAMERA_SCRIPTS_VERSION = 3966d2c8e7e6885514020e435448b481ca0c0410
 CAMERA_SCRIPTS_SITE = ssh://git@bitbucket.org/chr1sniessl/capable_camera_firmware-mirror.git
 CAMERA_SCRIPTS_SITE_METHOD = git
 CAMERA_SCRIPTS_SUBDIR = scripts
