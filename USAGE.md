@@ -21,6 +21,20 @@ The most likely to be changed options are listed here.
 --input-path directory to watch for commands, defaults to /tmp/lorawan
 --output-path directory to write responses to, defaults to /tmp/lorawan, though the systemd service sets it to /mnt/data/lorawan
 
+## eeprom access and serial information
+
+--eeprom_access.sh is used to read/write information from the EEPROM
+--The first 32 bytes of each EEPROM bank is dedicated to serial-number/board revision information.
+--To access the first 32 bytes for read/write, you must use the -s argument.
+--For example, to program the contents for a file into the EEPROM serial space:
+  sh eeprom_access.sh -w -f serialInfo.bin -o 0 -ba 0 -s
+--Example to read the Serial space data into a file
+  sh eeprom_access.sh -r -f /tmp/dump.bin -o 0 -ba -s
+  cat /tmp/dump.bin
+  52197cfa+B1C0HWXX___+TESTSIL___
+--Serial information is formatted as followed:
+  8 Bytes SSID, '+', 11 Bytes Board config, '+', 10 Bytes Hellbender Serial
+  
 # Scripts
 
 ## resize-data-partition.sh
