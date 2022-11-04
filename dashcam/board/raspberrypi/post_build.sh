@@ -45,10 +45,11 @@ EOF
 # Options necessary for usbmount from C.Osterwood.  Note that we give rules for vfat but I've also
 # tested an ext4 thumbdrive and that mounted fine and can be written to.
 # 2022-11-03 NIESSL - Added in support for exFAT as well.
-FS_MOUNT_OPT_REPLACE="FS_MOUNTOPTIONS=\"-fstype=vfat,gid=users,dmask=0007,fmask=0117 \\\ \n                 -fstype=exfat,gid=users,dmask=0007,fmask=0117\""
+#FS_MOUNT_OPT_REPLACE="FS_MOUNTOPTIONS=\"-fstype=vfat,gid=users,dmask=0007,fmask=0117\""
+FS_MOUNT_OPT_REPLACE="FS_MOUNTOPTIONS=\"-fstype=vfat,gid=users,dmask=0007,fmask=0117 \\\ \n                 -fstype=ntfs,gid=users,dmask=0007,fmask=0117\""
 
 sed -i "s/PrivateMounts=yes/PrivateMounts=no/g" ${TARGET_DIR}/lib/systemd/system/systemd-udevd.service
-sed -i "s/FILESYSTEMS=\".*\"/FILESYSTEMS=\"vfat exfat ext2 ext3 ext4 hfsplus\"/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
+sed -i "s/FILESYSTEMS=\".*\"/FILESYSTEMS=\"vfat exfat-fuse ntfs ext2 ext3 ext4 hfsplus fuseblk\"/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
 sed -i "s/FS_MOUNTOPTIONS=\".*\"/$FS_MOUNT_OPT_REPLACE/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
 sed -i "s/sync,noexec,nodev/noexec,nodev/g" ${TARGET_DIR}/etc/usbmount/usbmount.conf
 
