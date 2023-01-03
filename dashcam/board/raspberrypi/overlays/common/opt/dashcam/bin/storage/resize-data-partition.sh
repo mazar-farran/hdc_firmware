@@ -82,6 +82,12 @@ do_reformat()
 # Pull the emmc_results file to preserve the log if we change the fs.
 cp $EMMC_RESULTS $EMMC_RESULTS_TMP
 
+# Perform fsck auto-correct on partition.
+# If this and the mount fails, then the flag won't be detected and
+# the partition will be reformatted.
+fsck -y $EXPAND_PARTITION
+mount $EXPAND_PARTITION
+
 SIZE_VALUE=$(get_size_value $EXPAND_PARTITION)
 echo "Initial emmc size: $SIZE_VALUE" | tee -a $EMMC_RESULTS_TMP
 
