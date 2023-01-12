@@ -15,10 +15,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      run: make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
+    - name: clean up
+      run: make clean
+    - name: build
+      working-directory: ./output
+      run: make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
+  
+  
