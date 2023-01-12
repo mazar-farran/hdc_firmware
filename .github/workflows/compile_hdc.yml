@@ -14,8 +14,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
+      with:
+       submodules: recursive
     - name: configure
       run: make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
     - name: clean up
