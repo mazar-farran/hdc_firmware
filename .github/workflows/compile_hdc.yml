@@ -20,11 +20,14 @@ jobs:
        submodules: recursive
     - name: configure
       run: make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
+    - name: build
+      run: make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
     - name: clean up
       working-directory: ./output
       run: make clean
-    - name: build
+    - name: make 
       working-directory: ./output
-      run: make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
+      run: make
+    
   
   
