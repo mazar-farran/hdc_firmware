@@ -3,4 +3,4 @@
 	url = https://github.com/buildroot/buildroot.git
 [submodule "dashcampublicpatches"]
 	path = dashcampublicpatches
-	url = git@bitbucket.org:chr1sniessl/dashcampublicpatches.git
+	url = git@github.com:Hivemapper/dashcam_public_patches.git
