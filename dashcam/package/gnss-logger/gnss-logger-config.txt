@@ -3,4 +3,5 @@ tempPath = /tmp/
 extension = json
 maxSize = 10000
 snr = false
+noFilter = true
 logDuration = 60
