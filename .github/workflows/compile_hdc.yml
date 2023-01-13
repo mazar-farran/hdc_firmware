@@ -11,10 +11,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
 
     steps:
     - uses: actions/checkout@v3
       with:
+       token: ${{ secrets.BUILD_PAT }}
        submodules: recursive
     - name: configure
       run: make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
