@@ -9,15 +9,17 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
-
     steps:
     - uses: actions/checkout@v3
       with:
        token: ${{ secrets.CLASSIC_TOKEN }}
        submodules: recursive
+    - name: Install packages
+      run: |
+        sudo apt-get update
+        sudo apt-get upgrade
+        sudo apt-get install -y make gcc g++ unzip git bc python device-tree-compiler mtd-utils
     - name: build
       run: |
         make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
