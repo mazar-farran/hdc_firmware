@@ -25,6 +25,11 @@ jobs:
         make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
         cd ./output
         make 
+    - name : Upload 
+      uses: actions/upload-artifact@master
+      with:
+        name: buildroot-hdc
+        path: ./output/images/update.raucb
     
   
   
