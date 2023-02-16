@@ -21,8 +21,10 @@ HOSTNAME="dashcam-${SN}"
 
 # Set in 3 places.  You would think /etc/hostname would drive what is used
 # by the "hostname" command but no, they are decoupled.
+# 2023-02-01 CTN: Now 4 places with wi-fi direct. Add in wpa_supplicant.conf
 echo "${HOSTNAME}" > /etc/hostname
 sed -i "s/dashcam/${HOSTNAME}/g" /etc/hosts
+sed -i "s/DIRECT-dashcam/DIRECT-${HOSTNAME}/g" /etc/wpa_supplicant.conf
 hostname ${HOSTNAME}
 
 # Finally, make the SSID unique in case we have multiple dashcams in the same
