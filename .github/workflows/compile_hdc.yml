@@ -14,32 +14,31 @@ jobs:
         with:
           token: ${{ secrets.CLASSIC_TOKEN }}
           submodules: recursive
-      # - uses: bettermarks/action-artifact-download@0.3.0
-      #   with:
-      #       token: ${{ secrets.CLASSIC_TOKEN }}
-      #       repo: hivemapper/odc-api
-      #       artifact_name: odc-api
-      #       wait_seconds: 30
-      # - run: |
-      #     unzip odc-api
-      #     mv dashcam-api.js  dashcam/package/camera-node/files/
+      - uses: bettermarks/action-artifact-download@0.3.0
+        with:
+             token: ${{ secrets.CLASSIC_TOKEN }}
+             repo: hivemapper/odc-api
+             artifact_name: odc-api
+             wait_seconds: 30
+      - run: |
+           ls -al odc-api
+           unzip odc-api
+           cp dashcam-api.js  dashcam/package/camera-node/files/dashcam-api.js
+           ls -al dashcam/package/camera-node/files/dashcam-api.js
+           md5sum dashcam/package/camera-node/files/dashcam-api.js
       - name: configure
         run: |
           make -s -C buildroot/ BR2_EXTERNAL=../dashcam O=../../output raspberrypicm4io_64_dev_dashcam_defconfig
       - name: Compile
         run: |
           cd ../output
-          make clean
-      - name: Compile
-        run: |
-          cd ../output
           make
       - name: Copy target
         run: |
-          mkdir output
-          cp ../output/images/update.raucb ./output/firmware_update.raucb
+          mkdir artifacts
+          cp ../output/images/update.raucb ./artifacts/firmware_update.raucb
       - name: Upload
         uses: actions/upload-artifact@master
         with:
           name: buildroot-hdc
-          path: output/firmware_update.raucb
+          path: artifacts/firmware_update.raucb
