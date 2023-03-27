@@ -20,6 +20,10 @@ jobs:
              repo: hivemapper/odc-api
              artifact_name: odc-api
              wait_seconds: 30
+      - name: Prep build & clean
+        run: |
+          cd ../output
+          make clean
       - run: |
            ls -al odc-api
            unzip odc-api
