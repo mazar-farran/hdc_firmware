@@ -5,7 +5,7 @@
 ################################################################################
 
 CAMERA_BRIDGE_VERSION = 8ff2a042db7ae72e0392064c724b8fcc908f17ed
-CAMERA_BRIDGE_SITE = ssh://git@github.com:Hivemapper/capable_camera_firmware.git
+CAMERA_BRIDGE_SITE = git@github.com:Hivemapper/capable_camera_firmware.git
 CAMERA_BRIDGE_SITE_METHOD = git
 CAMERA_BRIDGE_CONF_OPTS = -DENABLE_OPENCV=0 -DCMAKE_INSTALL_PREFIX="/opt/dashcam"\
                           -DINSTALL_CONFIG_FILES_PATH="/opt/dashcam/bin/"
