@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LED_CONTROLLER_VERSION = ebc79d8f1183a4428a46f97ad30df6a9e56d9af3
+LED_CONTROLLER_VERSION = 63f0953022bc5ccc515045e0cebfccd5677f263a
 LED_CONTROLLER_SITE = git@github.com:Hivemapper/capable_camera_firmware.git
 LED_CONTROLLER_SITE_METHOD = git
 LED_CONTROLLER_CONF_OPTS = -DCMAKE_INSTALL_PREFIX="/opt/dashcam" \

@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-GNSS_LOGGER_VERSION = ebc79d8f1183a4428a46f97ad30df6a9e56d9af3
+GNSS_LOGGER_VERSION = 63f0953022bc5ccc515045e0cebfccd5677f263a
 GNSS_LOGGER_SITE = git@github.com:Hivemapper/capable_camera_firmware.git
 GNSS_LOGGER_SITE_METHOD = git
 GNSS_LOGGER_CONF_OPTS = -DCMAKE_INSTALL_PREFIX="/opt/dashcam" \
