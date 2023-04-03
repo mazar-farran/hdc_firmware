@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-IMU_LOGGER_VERSION = 148f4a8f0e4376961174a08baa5dfaa90c58e994
-IMU_LOGGER_SITE = ssh://git@bitbucket.org/chr1sniessl/capable_camera_firmware-mirror.git
+IMU_LOGGER_VERSION = 63f0953022bc5ccc515045e0cebfccd5677f263a
+IMU_LOGGER_SITE = git@github.com:Hivemapper/capable_camera_firmware.git
 IMU_LOGGER_SITE_METHOD = git
 IMU_LOGGER_CONF_OPTS = -DCMAKE_INSTALL_PREFIX="/opt/dashcam" \
 						-DINSTALL_CONFIG_FILES_PATH="/opt/dashcam/bin/"
