@@ -1,6 +1,6 @@
 [Unit]
 Description=WiFi P2P auto connector
-After=network.target dnsmasq.service dhcpcd.service camera-node.service
+After=network.target dnsmasq.service dhcpcd.service camera-node.service api-health-manager.service
 
 [Service]
 Type=simple
