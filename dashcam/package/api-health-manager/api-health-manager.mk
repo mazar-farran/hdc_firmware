@@ -4,12 +4,12 @@
 #
 ################################################################################
 
-CAMERA_NODE_VERSION = 1.0.0
-CAMERA_NODE_SITE = $(BR2_EXTERNAL_DASHCAM_PATH)/package/api-health-manager/files
-CAMERA_NODE_SITE_METHOD = local
-CAMERA_NODE_DEPENDENCIES = nodejs
+API_HEALTH_MANAGER_VERSION = 1.0.0
+API_HEALTH_MANAGER_SITE = $(BR2_EXTERNAL_DASHCAM_PATH)/package/api-health-manager/files
+API_HEALTH_MANAGER_SITE_METHOD = local
+API_HEALTH_MANAGER_DEPENDENCIES = nodejs
 
-define CAMERA_NODE_INSTALL_TARGET_CMDS
+define API_HEALTH_MANAGER_INSTALL_TARGET_CMDS
 	#Add your node file to files and replace HELLOWORLD.js with your file's name
 	$(INSTALL) -D -m 644 $(@D)/health-manager.js \
 		$(TARGET_DIR)/opt/dashcam/bin/health-manager.js
