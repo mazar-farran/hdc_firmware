@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-CAMERA_SCRIPTS_VERSION = 835f523737781363d6b8871f093cda6c1fcf3eed
+CAMERA_SCRIPTS_VERSION = 3b7e55af23cc40b5d4b53b0640b0db8ac8d464c9
 CAMERA_SCRIPTS_SITE = git@github.com:Hivemapper/capable_camera_firmware.git
 CAMERA_SCRIPTS_SITE_METHOD = git
 CAMERA_SCRIPTS_SUBDIR = scripts
