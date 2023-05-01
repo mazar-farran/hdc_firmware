@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-CAMERA_BRIDGE_VERSION = 1c234582942e1e1fe2123dc4396196806edced19
+CAMERA_BRIDGE_VERSION = 0d81235ef952d51f6cd8df14b0f45eae2110caa2
 CAMERA_BRIDGE_SITE = git@github.com:Hivemapper/camera_bridge.git
 CAMERA_BRIDGE_SITE_METHOD = git
 CAMERA_BRIDGE_CONF_OPTS = -DENABLE_OPENCV=0 -DCMAKE_INSTALL_PREFIX="/opt/dashcam"\
@@ -15,8 +15,6 @@ CAMERA_BRIDGE_CONF_OPTS = -DENABLE_OPENCV=0 -DCMAKE_INSTALL_PREFIX="/opt/dashcam
 CAMERA_BRIDGE_DEPENDENCIES = boost libcamera jpeg-turbo json-for-modern-cpp
 
 define CAMERA_BRIDGE_INSTALL_INIT_SYSTEMD
-	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-bridge.timer \
-		$(TARGET_DIR)/usr/lib/systemd/system/camera-bridge.timer
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-bridge.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/camera-bridge.service
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-preview.service \

@@ -4,7 +4,6 @@
 # Includes all processes that could talk to the eMMC
 
 systemctl stop camera-bridge
-systemctl stop camera-bridge.timer
 systemctl stop gnss-logger
 systemctl stop imu-logger
 systemctl stop lorawan-logger
