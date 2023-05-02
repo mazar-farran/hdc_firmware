@@ -1,0 +1,13 @@
+[Unit]
+Description=GMA Offline Loader
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/opt/dashcam/bin
+Environment="LD_LIBRARY_PATH=/opt/dashcam/lib"
+ExecStart=/opt/dashcam/bin/gma_loader /mnt/data/mgaoffline.ubx
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

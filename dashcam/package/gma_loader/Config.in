@@ -1,0 +1,4 @@
+config BR2_PACKAGE_GMA_LOADER
+	bool "gma-loader"
+	help
+	  General utility scripts
