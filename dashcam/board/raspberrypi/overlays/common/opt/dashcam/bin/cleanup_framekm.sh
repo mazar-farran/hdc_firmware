@@ -7,7 +7,7 @@ fi
 
 folder1="$1"
 folder2="$2"
-highwater_mark=$(($3 * 1024 * 1024))
+highwater_mark=$(($3 * 1024 * 1024 * 1024))
 
 current_size=$(du -s "$folder1" | awk '{print $1}')
 
