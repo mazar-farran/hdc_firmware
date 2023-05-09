@@ -4,10 +4,10 @@
 #
 ################################################################################
 
-ONBOARD_UPDATER_VERSION = c5506cf0c53ebf44869c8b97bb0144f086502b6e
+ONBOARD_UPDATER_VERSION = 4ae977fbb06cc8ea7b015589f8fe20786753fbe0
 # Note that this is a private repo being accessed over SSH, so you need to have
 # SSH keys setup for BitBucket.
-ONBOARD_UPDATER_SITE = ssh://git@bitbucket.org/chr1sniessl/onboardupdater.git
+ONBOARD_UPDATER_SITE = ssh://git@bitbucket.org/hellbenderinc/onboardupdater.git
 ONBOARD_UPDATER_SITE_METHOD = git
 ONBOARD_UPDATER_DEPENDENCIES = python-transitions
 ONBOARD_UPDATER_SETUP_TYPE = setuptools
