@@ -4,19 +4,18 @@
 #
 ################################################################################
 
-GNSS_LOGGER_VERSION = 3b7e55af23cc40b5d4b53b0640b0db8ac8d464c9
-GNSS_LOGGER_SITE = git@github.com:Hivemapper/capable_camera_firmware.git
-GNSS_LOGGER_SITE_METHOD = git
-GNSS_LOGGER_CONF_OPTS = -DCMAKE_INSTALL_PREFIX="/opt/dashcam" \
-						-DINSTALL_CONFIG_FILES_PATH="/opt/dashcam/bin/"
-GNSS_LOGGER_DEPENDENCIES = boost json-for-modern-cpp
-GNSS_LOGGER_MAKE_OPTS = gnss-logger
+GNSS_LOGGER_VERSION = 0.1.7
+GNSS_LOGGER_SITE = https://github.com/streamingfast/gnss-logger/releases/download/v$(GNSS_LOGGER_VERSION)
+GNSS_LOGGER_SOURCE = gnss-logger_$(GNSS_LOGGER_VERSION)_Linux_arm64.tar.gz
+GNSS_LOGGER_STRIP_COMPONENTS = 0
+
+define GNSS_LOGGER_INSTALL_TARGET_CMDS
+	$(INSTALL) -D -m 755 $(@D)/gnsslogger $(TARGET_DIR)/opt/dashcam/bin
+endef
 
 define GNSS_LOGGER_INSTALL_INIT_SYSTEMD
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/gnss-logger/gnss-logger.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/gnss-logger.service
-	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/gnss-logger/gnss-logger-config.txt \
-		$(TARGET_DIR)/opt/dashcam/gnss-logger-config.txt
 endef
 
-$(eval $(cmake-package))
+$(eval $(generic-package))

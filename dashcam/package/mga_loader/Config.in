@@ -1,4 +1,0 @@
-config BR2_PACKAGE_MGA_LOADER
-	bool "mga-loader"
-	help
-	  General utility scripts
