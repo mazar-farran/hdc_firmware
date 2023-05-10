@@ -1,0 +1,13 @@
+[Unit]
+Description=File Mover
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/opt/dashcam/bin
+Environment="LD_LIBRARY_PATH=/opt/dashcam/lib"
+ExecStart=/opt/dashcam/bin/file_mover /tmp/2k /mnt/data/pic 21474836480
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

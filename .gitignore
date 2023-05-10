@@ -1,3 +1,8 @@
 .buildroot-ccache
 output
+.idea
 
+/.idea/.gitignore
+/.idea/hdc_firmware.iml
+/.idea/modules.xml
+/.idea/vcs.xml

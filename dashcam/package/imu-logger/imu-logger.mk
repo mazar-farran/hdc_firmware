@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-IMU_LOGGER_VERSION = 63f0953022bc5ccc515045e0cebfccd5677f263a
+IMU_LOGGER_VERSION = 3b7e55af23cc40b5d4b53b0640b0db8ac8d464c9
 IMU_LOGGER_SITE = git@github.com:Hivemapper/capable_camera_firmware.git
 IMU_LOGGER_SITE_METHOD = git
 IMU_LOGGER_CONF_OPTS = -DCMAKE_INSTALL_PREFIX="/opt/dashcam" \
