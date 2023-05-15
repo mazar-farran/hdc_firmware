@@ -1,6 +1,7 @@
 .buildroot-ccache
 output
 .idea
+.fleet
 
 /.idea/.gitignore
 /.idea/hdc_firmware.iml
