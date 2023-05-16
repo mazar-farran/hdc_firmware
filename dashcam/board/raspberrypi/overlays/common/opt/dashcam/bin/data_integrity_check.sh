@@ -9,9 +9,19 @@ folder1="$1"
 folder2="$2"
 file_path="$3"
 max_file_size=$((2 * 1024 * 1024))
+min_file_size=$((100 * 1024))
 
 # Remove all empty files from folder2
 find "$folder2" -type f -empty -exec rm -f {} +
+
+# Remove framekm files less than 100 KB and corresponding metadata files
+find "$folder1" -type f -size -${min_file_size}c | while read -r file; do
+    base_name=$(basename "$file")
+    json_file="${folder2}/${base_name}.json"
+    
+    echo "Removing: $file and $json_file"
+    rm -f "$file" "$json_file"
+done
 
 # Process files in folder1
 find "$folder1" -type f | while read -r file; do
