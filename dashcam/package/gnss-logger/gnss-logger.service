@@ -5,7 +5,7 @@ After=network.target
 [Service]
 WorkingDirectory=/opt/dashcam/bin
 ExecStartPre=/bin/mkdir -p /mnt/data/gps
-ExecStart=/opt/dashcam/bin/gnsslogger -mga-offline-file-path /opt/dashcam/bin/mgaoffline.ubx
+ExecStart=/opt/dashcam/bin/gnsslogger -mga-offline-file-path /mnt/data/mgaoffline.ubx
 Restart=always
 
 [Install]

@@ -16,8 +16,6 @@ endef
 define GNSS_LOGGER_INSTALL_INIT_SYSTEMD
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/gnss-logger/gnss-logger.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/gnss-logger.service
-	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/gnss-logger/mgaoffline.ubx \
-		$(TARGET_DIR)/opt/dashcam/bin/mgaoffline.ubx
 endef
 
 $(eval $(generic-package))
