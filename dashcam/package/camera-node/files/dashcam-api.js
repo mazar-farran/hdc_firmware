@@ -133,7 +133,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.isDev = exports.API_VERSION = void 0;
 __exportStar(__nccwpck_require__(9020), exports);
-exports.API_VERSION = '2.0.14';
+exports.API_VERSION = '2.0.15';
 const isDev = () => {
     return false;
 };
@@ -1976,7 +1976,7 @@ exports.HeartBeatService = {
                     const gpsLostPeriod = lastSuccessfulLock
                         ? Math.abs(Date.now() - lastSuccessfulLock)
                         : 70000;
-                    if (gpsLostPeriod > 60000) {
+                    if (gpsLostPeriod > 12000) {
                         gpsLED = led_1.COLORS.RED;
                     }
                     if (isLock) {
@@ -44962,7 +44962,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.isDev = exports.API_VERSION = void 0;
 __exportStar(__nccwpck_require__(4484), exports);
-exports.API_VERSION = '2.0.14';
+exports.API_VERSION = '2.0.15';
 const isDev = () => {
     return false;
 };
@@ -45314,7 +45314,7 @@ exports.HeartBeatService = {
                     const gpsLostPeriod = lastSuccessfulLock
                         ? Math.abs(Date.now() - lastSuccessfulLock)
                         : 70000;
-                    if (gpsLostPeriod > 60000) {
+                    if (gpsLostPeriod > 12000) {
                         gpsLED = led_1.COLORS.RED;
                     }
                     if (isLock) {
