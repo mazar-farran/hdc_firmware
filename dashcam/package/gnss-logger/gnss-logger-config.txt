@@ -1,7 +1,0 @@
-path = /mnt/data/gps
-tempPath = /tmp/
-extension = json
-maxSize = 10000
-snr = false
-noFilter = true
-logDuration = 15

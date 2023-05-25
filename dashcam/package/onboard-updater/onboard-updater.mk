@@ -4,10 +4,10 @@
 #
 ################################################################################
 
-ONBOARD_UPDATER_VERSION = c5506cf0c53ebf44869c8b97bb0144f086502b6e
+ONBOARD_UPDATER_VERSION = bac054b3659702e2b9eed0dc90038639a42d47f4
 # Note that this is a private repo being accessed over SSH, so you need to have
 # SSH keys setup for BitBucket.
-ONBOARD_UPDATER_SITE = ssh://git@bitbucket.org/chr1sniessl/onboardupdater.git
+ONBOARD_UPDATER_SITE = git@github.com:Hivemapper/hdc_background_updater.git
 ONBOARD_UPDATER_SITE_METHOD = git
 ONBOARD_UPDATER_DEPENDENCIES = python-transitions
 ONBOARD_UPDATER_SETUP_TYPE = setuptools
