@@ -6,8 +6,7 @@
 systemctl stop camera-node
 systemctl stop api-health-manager
 systemctl stop camera-bridge
-systemctl stop gnss-logger
-systemctl stop imu-logger
+systemctl stop data-logger
 systemctl stop lorawan-logger
 systemctl stop led-controller
 systemctl stop rauc

@@ -1,0 +1,4 @@
+config BR2_PACKAGE_DATA_LOGGER
+	bool "data-logger"
+	help
+	  System data logger

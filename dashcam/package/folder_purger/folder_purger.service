@@ -6,7 +6,7 @@ After=network.target
 User=root
 WorkingDirectory=/opt/dashcam/bin
 Environment="LD_LIBRARY_PATH=/opt/dashcam/lib"
-ExecStart=/opt/dashcam/bin/folder-purger /tmp/recording/pic 800000000
+ExecStart=/opt/dashcam/bin/folder-purger /tmp/recording/pic 800000000 /mnt/data/gps 200000000 /mnt/data/imu 360000000
 Restart=always
 
 [Install]

@@ -1,4 +1,0 @@
-config BR2_PACKAGE_FILE_MOVER
-	bool "file-mover"
-	help
-	  General utility scripts

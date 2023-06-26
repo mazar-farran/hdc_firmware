@@ -2,9 +2,9 @@
 
 
 
-dashcam
+dashcam`
 
-## Prerequisites
+erequisites
 
 The `dashcam` project uses the `onboardupdater` package, which is currently kept in the Hellbender
 BitBucket.  You need to have SSH keys setup so that Buildroot can download the git repo.
