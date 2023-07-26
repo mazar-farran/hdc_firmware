@@ -38,10 +38,9 @@ interface when running `make xconfig`.
 1. Clone the top-level dashcam repository with submodules.  The repository is hosted on BitBucket
 so make sure you have SSH keys setup (this is a requirement of this project).
 
-    ```
-    git clone --recurse-submodules git@bitbucket.org:chr1sniessl/dashcam.git
-    cd dashcam
-    ``` 
+```bash
+git clone --recurse-submodules git@github.com:Hivemapper/hdc_firmware.git
+``` 
 
 2. Setup a target build.  The config files are setup to build both 32-bit and 64-bit images,
 though the camera SW only supports 32-bit at the moment so that is preferred.  We also distinguish
