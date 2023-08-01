@@ -1,10 +1,6 @@
- 
+# HDC Firmware 
 
-
-
-dashcam`
-
-erequisites
+## Dashcam prerequisites
 
 The `dashcam` project uses the `onboardupdater` package, which is currently kept in the Hellbender
 BitBucket.  You need to have SSH keys setup so that Buildroot can download the git repo.
@@ -42,48 +38,57 @@ so make sure you have SSH keys setup (this is a requirement of this project).
 git clone --recurse-submodules git@github.com:Hivemapper/hdc_firmware.git
 ``` 
 
-2. Setup a target build.  The config files are setup to build both 32-bit and 64-bit images,
+2. Set up a target build.  The config files are setup to build both 32-bit and 64-bit images,
 though the camera SW only supports 32-bit at the moment so that is preferred.  We also distinguish
 between production and development builds.  See section below, but
 `raspberrypicm4io_dev_dashcam_defconfig` should be considered the default option for developers
 and `raspberrypicm4io_prod_dashcam_defconfig` for production use.
-    ```
-    make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
-    ```
+```
+make -C buildroot/ BR2_EXTERNAL=../dashcam O=../output raspberrypicm4io_64_dev_dashcam_defconfig
+```
 
 3. Perform the build.  With no ccache a rebuild should take about 30-40 minutes.
-    ```
-    cd output
-    make
-    ```
+```
+cd output
+make
+```
+Once the make command is done and was successfully executed, you will have the `update.raucb` image under `output/images`.
+You can then push the image to the dashcam and install it with 
+```bash
+rauc install update.raucb`
+reboot
+```
+
+> One important thing to note: there is caching on the different packages that are built. If for some reason the changes made to a
+> package are not apparent, it may strongly be because of caching. Let's say you changed something in the `camera-node` package
+> you can delete it by running `rm -r output/build/camera-node-1.0.0`. Then rerun steps 2 and 3.
 
 4. Install the image on the target using your preferred method.  `images/sdcard.img` is a full disk 
 image suitable for flashing.  For the CM4IO target, to flash you need the pin jumper and a 
 connection to the target's USB flashing port.  The commands to install the bootloader,
 flash the device, and resize the final data partition have all been collected into a
 script.  Relative to the `output` directory and assuming the device will mount to `/dev/sda`, run:
-    ```
-    ../scripts/flash_resize_image.sh sda
-    ```
-    This script has basic safety checks that the target is connected to the given device (e.g. `sda`),
-    and is in fact a Raspberry Pi!
+```
+../scripts/flash_resize_image.sh sda
+```
+This script has basic safety checks that the target is connected to the given device (e.g. `sda`),
+and is in fact a Raspberry Pi!
     
-5. After flashing the full disk image, changes to the image can use over-the-air updates.  
+5. After flashing the full disk image, changes to the image can use over-the-air updates.
+**The preferred method** for doing updates is the production method using the
+onboard updater over http.  A script is provided to perform the update from the host.
+Relative to the `output` directory and assuming a target IP address, run:
+```
+../scripts/update_http.sh 192.168.1.10
+```
+You should see the update progress in the console and the target will reboot.  When it comes
+up again it will display the version info of the new image.
 
-    **The preferred method** for doing updates is the production method using the
-    onboard updater over http.  A script is provided to perform the update from the host.
-    Relative to the `output` directory and assuming a target IP address, run:
-    ```
-    ../scripts/update_http.sh 192.168.1.10
-    ```
-    You should see the update progress in the console and the target will reboot.  When it comes
-    up again it will display the version info of the new image.
-
-    During development, we also support a mode that leaves SSH open to a root user with no
-    password.  A script is also provided for this method:
-    ```
-    ../scripts/update_ssh.sh 192.168.1.10
-    ```
+During development, we also support a mode that leaves SSH open to a root user with no
+password.  A script is also provided for this method:
+```
+../scripts/update_ssh.sh 192.168.1.10
+```
 
 Do note that steps 2 and 3 can be performed using the [scripts/rebuild.sh](./scripts/rebuild.sh) script.
 
