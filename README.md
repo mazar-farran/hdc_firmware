@@ -1,10 +1,5 @@
 # HDC Firmware 
 
-## Dashcam prerequisites
-
-The `dashcam` project uses the `onboardupdater` package, which is currently kept in the Hellbender
-BitBucket.  You need to have SSH keys setup so that Buildroot can download the git repo.
-
 ## Dependencies
 Refer to (or run) the [scripts/host_setup.sh](./scripts/host_setup.sh) for a list of required
 and optional dependencies.
@@ -74,24 +69,6 @@ script.  Relative to the `output` directory and assuming the device will mount t
 This script has basic safety checks that the target is connected to the given device (e.g. `sda`),
 and is in fact a Raspberry Pi!
     
-5. After flashing the full disk image, changes to the image can use over-the-air updates.
-**The preferred method** for doing updates is the production method using the
-onboard updater over http.  A script is provided to perform the update from the host.
-Relative to the `output` directory and assuming a target IP address, run:
-```
-../scripts/update_http.sh 192.168.1.10
-```
-You should see the update progress in the console and the target will reboot.  When it comes
-up again it will display the version info of the new image.
-
-During development, we also support a mode that leaves SSH open to a root user with no
-password.  A script is also provided for this method:
-```
-../scripts/update_ssh.sh 192.168.1.10
-```
-
-Do note that steps 2 and 3 can be performed using the [scripts/rebuild.sh](./scripts/rebuild.sh) script.
-
 ## USB Updates
 
 ### Process
@@ -223,17 +200,6 @@ This is the RPi bootloader.  Do the following:
 
 ## Developing in the Dashcam Project
 
-### Updating the Capable Robot Camera Software
-1. Changes are pulled in from the Capable Robot repo, so changes in the camera software first need to 
-be pushed to the camera repo GitHub.  The change itself doesn't need to be in the main branch,
-it just needs a hash.
-
-2. The hash needs to be modified in the [camera-cpp.mk](./dashcam/package/camera-cpp/camera-cpp.mk)
-file and the [camera-zig.mk](./dashcam/package/camera-zig/camera-zig.mk) files.  Since the camera
-SW has two different build systems in the same tree we build it as two separate projects but
-
-3. From the `output` directory, run `make`.
-
 ### Updating the RPi `config.txt` file.
 `config.txt` for each target is modified from the default.  For example, you can find one target
 version [here](./dashcam/board/raspberrypi/config_cm4io.txt).  If you modify that, then from
@@ -308,8 +274,6 @@ To use:
 
 5. Optionally copy the build artifacts out of the container using any number of methods, such as
     [those described here](https://stackoverflow.com/questions/22049212/docker-copying-files-from-docker-container-to-host).
-
-6. Optionally update the target using [scripts/update_http.sh](./scripts/update_http.sh).
 
 ### Future
 
