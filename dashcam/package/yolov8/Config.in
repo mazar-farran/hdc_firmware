@@ -1,0 +1,9 @@
+config BR2_PACKAGE_YOLOV8
+	bool "yolov8"
+    select BR2_PACKAGE_PYTHON3
+	select BR2_PACKAGE_PYTHON_REQUESTS
+	select BR2_PACKAGE_PYTHON_GITPYTHON
+	select HM_PACKAGE_PYTHON_NUMPY
+	select BR2_PACKAGE_PYTHON_SCIPY
+	help
+	  Yolov8 package dependencies
