@@ -1,0 +1,3 @@
+config BR2_PACKAGE_PYTHON_OPENCV_PYTHON
+	bool "python-opencv-python"
+	select BR2_PACKAGE_PYTHON_OPENCV_PYTHON # runtime
