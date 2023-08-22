@@ -13,4 +13,3 @@ PYTHON_SCIKIT_BUILD_LICENSE_FILES = LICENSE
 PYTHON_SCIKIT_BUILD_DEPENDENCIES = host-python-hatchling host-python-hatch-vcs host-python-hatch-fancy-pypi-readme
 
 $(eval $(python-package))
-$(eval $(host-python-package))

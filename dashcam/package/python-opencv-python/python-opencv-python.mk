@@ -10,7 +10,7 @@ PYTHON_OPENCV_PYTHON_SITE = https://files.pythonhosted.org/packages/32/72/03747a
 PYTHON_OPENCV_PYTHON_SETUP_TYPE = setuptools
 PYTHON_OPENCV_PYTHON_LICENSE = Apache-2.0
 PYTHON_OPENCV_PYTHON_LICENSE_FILES = LICENSE
-PYTHON_OPENCV_PYTHON_DEPENDENCIES = readline host-python-distro host-python-scikit-build host-python-wheel
+PYTHON_OPENCV_PYTHON_DEPENDENCIES = readline python-distro python-scikit-build python-wheel
 
 $(eval $(python-package))
 $(eval $(host-autotools-package))
