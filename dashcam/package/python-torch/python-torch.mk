@@ -18,6 +18,7 @@ PYTHON_TORCH_CONF_OPTS += \
 	-DINSTSONAME=libpython3.11.so.1.0 \
 	-DHAVE_STD_REGEX=ON \
 	-DRUN_HAVE_STD_REGEX=1 \
-	-DBUILD_TEST=False
+	-DBUILD_TEST=False \ 
+	-DLD_LIBRARY_PATH=/usr/bin/gcc-11/lib
 
 $(eval $(python-package))
