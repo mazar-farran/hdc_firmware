@@ -85,6 +85,6 @@ fi
 ## install onnxruntime wheel on dashcam
 echo "doudou target dir"
 echo ${TARGET_DIR}
-wget https://files.pythonhosted.org/packages/fe/56/8a055881e0f9f4daa1b186e3f7e32f9c0a9cd9fbb07f540ba2a5da03c379/onnxruntime-1.15.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+# wget https://files.pythonhosted.org/packages/fe/56/8a055881e0f9f4daa1b186e3f7e32f9c0a9cd9fbb07f540ba2a5da03c379/onnxruntime-1.15.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
 # tar xf 
 # cp
