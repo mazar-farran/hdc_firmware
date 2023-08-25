@@ -87,3 +87,9 @@ wget https://files.pythonhosted.org/packages/fe/56/8a055881e0f9f4daa1b186e3f7e32
 wget https://files.pythonhosted.org/packages/e0/a3/f1df79206764a122f7fe05084909cf20581cfb66a78677636382ec1b2231/opencv_python-4.5.5.64-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl --directory-prefix=/tmp
 unzip -o /tmp/onnxruntime-1.15.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl -d ${TARGET_DIR}/usr/lib/python3.11/site-packages
 unzip -o /tmp/opencv_python-4.5.5.64-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl -d ${TARGET_DIR}/usr/lib/python3.11/site-packages
+
+# fetch and pip install pytorch and torchvision
+# wget https://files.pythonhosted.org/packages/5d/61/7273dea60a17c63d9eaef04ae8fee02351e0cb477e76df4ea211896ae124/torch-2.0.1-cp311-cp311-manylinux2014_aarch64.whl --directory-prefix=/tmp
+# wget https://files.pythonhosted.org/packages/66/e0/cd847d4d22be88a71d5d65f5809342e7ea7ded62230e7bde7420a2105e51/torchvision-0.15.2-cp311-cp311-manylinux2014_aarch64.whl --directory-prefix=/tmp
+# unzip -o /tmp/torch-2.0.1-cp311-cp311-manylinux2014_aarch64.whl -d ${TARGET_DIR}/usr/lib/python3.11/site-packages
+# unzip -o /tmp/torchvision-0.15.2-cp311-cp311-manylinux2014_aarch64.whl -d ${TARGET_DIR}/usr/lib/python3.11/site-packages
