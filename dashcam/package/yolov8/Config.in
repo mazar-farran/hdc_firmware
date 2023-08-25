@@ -17,6 +17,11 @@ config BR2_PACKAGE_YOLOV8
 	select BR2_PACKAGE_PYTHON_MPMATH
 	select BR2_PACKAGE_PYTHON_HUMANFRIENDLY
 	select BR2_PACKAGE_PYTHON_NUMPY
-	# select BR2_PACKAGE_PYTHON_ONNXRUNTIME
+	# dependencies for opencv_python
+	select BR2_PACKAGE_READLINE
+	select BR2_PACKAGE_PYTHON_WHEEL
+	select BR2_PACKAGE_PYTHON_DISTRO
+	select BR2_PACKAGE_PYTHON_SCIKIT_BUILD
+	# dependencies for opencv_python
 	help
 	  Yolov8 package dependencies

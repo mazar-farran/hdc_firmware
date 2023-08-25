@@ -82,9 +82,8 @@ if [[ ${IS_64} -ne 0 ]]; then
   sed -i "s/IGNORE_CCF=0/IGNORE_CCF=1/g" ${TARGET_DIR}/opt/dashcam/bin/bootbit.sh
 fi
 
-## install onnxruntime wheel on dashcam
-echo "doudou target dir"
-echo ${TARGET_DIR}
-# wget https://files.pythonhosted.org/packages/fe/56/8a055881e0f9f4daa1b186e3f7e32f9c0a9cd9fbb07f540ba2a5da03c379/onnxruntime-1.15.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
-# tar xf 
-# cp
+# fetch and pip install onnxruntime and open cv whls
+wget https://files.pythonhosted.org/packages/fe/56/8a055881e0f9f4daa1b186e3f7e32f9c0a9cd9fbb07f540ba2a5da03c379/onnxruntime-1.15.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl --directory-prefix=/tmp
+wget https://files.pythonhosted.org/packages/e0/a3/f1df79206764a122f7fe05084909cf20581cfb66a78677636382ec1b2231/opencv_python-4.5.5.64-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl --directory-prefix=/tmp
+unzip -o /tmp/onnxruntime-1.15.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl -d ${TARGET_DIR}/usr/lib/python3.11/site-packages
+unzip -o /tmp/opencv_python-4.5.5.64-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl -d ${TARGET_DIR}/usr/lib/python3.11/site-packages
