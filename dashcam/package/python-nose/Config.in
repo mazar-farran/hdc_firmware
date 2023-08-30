@@ -1,0 +1,3 @@
+config BR2_PACKAGE_PYTHON_NOSE
+	bool "python-nose"
+	select BR2_PACKAGE_PYTHON3
