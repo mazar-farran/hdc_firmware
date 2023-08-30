@@ -1,0 +1,3 @@
+config BR2_PACKAGE_ONNX_YOLOV8_OBJECT_DETECTION
+	bool "onnx-yolov8-object-detection"
+  select BR2_PACKAGE_PYTHON3

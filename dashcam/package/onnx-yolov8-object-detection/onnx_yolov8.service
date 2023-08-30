@@ -1,0 +1,11 @@
+[Unit]
+Description=ONNX Yolov8 Object Detection
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/dashcam/bin/onnx_yolov8
+ExecStart=python /opt/dashcam/bin/onnx_yolov8/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
