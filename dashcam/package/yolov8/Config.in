@@ -33,6 +33,6 @@ config BR2_PACKAGE_YOLOV8
 	# select BR2_PACKAGE_PYTHON_JINJA2
 	# Add inotify + nose as dependencies
 	select BR2_PACKAGE_PYTHON_INOTIFY
-	# select BR2_PACKAGE_PYTHON_NOSE # does not seem to be mandatory as it's only for testing framework of inotify
+	select BR2_PACKAGE_HIVEMAPPER_EDGE_PRIVACY
 	help
 	  Yolov8 package dependencies

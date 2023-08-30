@@ -1,0 +1,3 @@
+config BR2_PACKAGE_HIVEMAPPER_EDGE_PRIVACY
+	bool "hivemapper-edge-privacy"
+  select BR2_PACKAGE_PYTHON3
