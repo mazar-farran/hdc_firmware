@@ -11,7 +11,7 @@ HIVEMAPPER_EDGE_PRIVACY_DEPENDENCIES = python3
 HIVEMAPPER_EDGE_PRIVACY_STRIP_COMPONENTS = 0
 
 define HIVEMAPPER_EDGE_PRIVACY_INSTALL_TARGET_CMDS
-	mkdir -p $(TARGET_DIR)/opt/dashcam/bin/onnx_yolov8/
+	mkdir -p $(TARGET_DIR)/opt/dashcam/bin/hivemapper_edge_privacy/
 	cp -r $(@D)/yolov8 $(TARGET_DIR)/opt/dashcam/bin/hivemapper_edge_privacy/
 	cp -r $(@D)/main.py $(TARGET_DIR)/opt/dashcam/bin/hivemapper_edge_privacy/
 endef
