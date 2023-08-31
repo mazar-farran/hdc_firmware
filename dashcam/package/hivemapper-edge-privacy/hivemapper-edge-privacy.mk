@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-HIVEMAPPER_EDGE_PRIVACY_VERSION = 0.1.0
+HIVEMAPPER_EDGE_PRIVACY_VERSION = 0.2.0
 HIVEMAPPER_EDGE_PRIVACY_SITE = https://github.com/streamingfast/hivemapper-edge-privacy/releases/download/v$(HIVEMAPPER_EDGE_PRIVACY_VERSION)
 HIVEMAPPER_EDGE_PRIVACY_SOURCE = hivemapper_edge_privacy.tar.gz
 HIVEMAPPER_EDGE_PRIVACY_DEPENDENCIES = python3
