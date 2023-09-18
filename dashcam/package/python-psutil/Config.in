@@ -1,3 +1,0 @@
-config BR2_PACKAGE_PYTHON_PSUTIL
-	bool "python-psutil"
-	select BR2_PACKAGE_PYTHON_SIX # runtime
