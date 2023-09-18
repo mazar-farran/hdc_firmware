@@ -113,3 +113,15 @@ else
     cp $EMMC_RESULTS_TMP $EMMC_RESULTS
 fi
 
+# Check and create swapfile if it doesn't exist
+SWAPFILE=/mnt/data/swapfile
+if [ ! -f "$SWAPFILE" ]; then
+    echo "Creating swapfile at $SWAPFILE" | tee -a $EMMC_RESULTS_TMP
+    dd if=/dev/zero of=$SWAPFILE bs=1M count=1024
+    chmod 600 $SWAPFILE
+    mkswap $SWAPFILE
+    swapon $SWAPFILE
+    echo "Swapfile created and activated" | tee -a $EMMC_RESULTS_TMP
+else
+    echo "Swapfile already exists" | tee -a $EMMC_RESULTS_TMP
+fi
