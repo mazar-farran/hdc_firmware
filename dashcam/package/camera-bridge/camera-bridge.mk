@@ -12,7 +12,7 @@ CAMERA_BRIDGE_CONF_OPTS = -DENABLE_OPENCV=0 -DCMAKE_INSTALL_PREFIX="/opt/dashcam
 
 # Looks like the camera-bridge links against libjpeg but the best way to provide
 # this is with the jpeg-turbo package.
-CAMERA_BRIDGE_DEPENDENCIES = boost libcamera jpeg-turbo json-for-modern-cpp ffmpeg libv4l
+CAMERA_BRIDGE_DEPENDENCIES = boost libcamera jpeg-turbo json-for-modern-cpp
 
 define CAMERA_BRIDGE_INSTALL_INIT_SYSTEMD
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-bridge/camera-bridge.service \
