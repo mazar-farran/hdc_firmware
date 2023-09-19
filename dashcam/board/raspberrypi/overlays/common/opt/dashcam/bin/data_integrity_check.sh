@@ -34,6 +34,18 @@ find "$folder1" -type f | while read -r file; do
     fi
 done
 
+# Process JSON files in folder2
+# If json exists in folder2 but corresponding file doesn't exist in folder1, remove json in folder2
+find "$folder2" -type f -name "*.json" | while read -r json; do
+    base_name=$(basename "$json" .json)
+    file="${folder1}/${base_name}"
+    
+    if [[ ! -e "$file" ]]; then
+        echo "Removing: $json"
+        rm -f "$json"
+    fi
+done
+
 # Check and truncate the file if it's larger than 2 MB
 if [ -e "$file_path" ]; then
     file_size=$(stat -c%s "$file_path")
