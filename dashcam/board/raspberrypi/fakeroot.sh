@@ -29,6 +29,9 @@ sed -i '/tmpfs \/var tmpfs/d' ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fsta
 echo "LABEL=data /mnt/data ext4 defaults,data=writeback,noauto,noatime, 0 2" >> ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fstab
 echo "/mnt/data/swapfile none swap defaults 0 0" >> ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fstab
 
+#Set up swappiness
+echo "10" >> ${BUILD_DIR}/buildroot-fs/squashfs/target/proc/sys/vm/swappiness
+
 # Don't let non-root users see the hostapd.conf file since it has password info.
 chmod og-rw ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/hostapd.conf
 
