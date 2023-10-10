@@ -54,6 +54,12 @@ rauc install update.raucb`
 reboot
 ```
 
+4. Add python dependencies
+```bash
+make defconfig 
+
+```
+
 > One important thing to note: there is caching on the different packages that are built. If for some reason the changes made to a
 > package are not apparent, it may strongly be because of caching. Let's say you changed something in the `camera-node` package
 > you can delete it by running `rm -r output/build/camera-node-1.0.0`. Then rerun steps 2 and 3.
