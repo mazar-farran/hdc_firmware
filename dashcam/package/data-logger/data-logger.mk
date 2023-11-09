@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-DATA_LOGGER_VERSION = 0.1.20
-DATA_LOGGER_SITE = https://github.com/streamingfast/hivemapper-data-logger/releases/download/v$(DATA_LOGGER_VERSION)
+DATA_LOGGER_VERSION = 1.0.2
+DATA_LOGGER_SITE = https://github.com/Hivemapper/hivemapper-data-logger/releases/download/v$(DATA_LOGGER_VERSION)
 DATA_LOGGER_SOURCE = hivemapper-data-logger_$(DATA_LOGGER_VERSION)_Linux_arm64.tar.gz
 DATA_LOGGER_STRIP_COMPONENTS = 0
 
