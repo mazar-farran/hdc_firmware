@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/opt/dashcam/bin
-ExecStart=/opt/dashcam/bin/datalogger log --gnss-mga-offline-file-path /mnt/data/mgaoffline.ubx --db-log-ttl=1h --imu-json-save-interval=5s --gnss-json-save-interval=30s --skip-filtering=true --db-output-path=/mnt/data/gnss.v1.1.1.db
+ExecStart=/opt/dashcam/bin/datalogger log --gnss-mga-offline-file-path /mnt/data/mgaoffline.ubx --db-log-ttl=1h --imu-json-save-interval=5s --gnss-json-save-interval=30s --skip-filtering=true --db-output-path=/mnt/data/gnss.v1.2.0.db
 Restart=always
 
 [Install]
