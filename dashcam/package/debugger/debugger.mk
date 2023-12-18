@@ -5,7 +5,7 @@
 ################################################################################
 
 DEBUGGER_VERSION = 0.1.13
-DEBUGGER_SITE = https://github.com/streamingfast/hivemapper-hdc-debugger/releases/download/v$(DEBUGGER_VERSION)
+DEBUGGER_SITE = https://github.com/Hivemapper/hivemapper-hdc-debugger/releases/download/v$(DEBUGGER_VERSION)
 DEBUGGER_SOURCE = hivemapper-hdc-debugger_$(DEBUGGER_VERSION)_Linux_arm64.tar.gz
 
 DEBUGGER_STRIP_COMPONENTS = 0
