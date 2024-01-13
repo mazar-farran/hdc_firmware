@@ -75,6 +75,7 @@ filename=boot.vfat
 
 [image.rootfs]
 filename=rootfs.squashfs
+adaptive=block-hash-index
 EOF
 
 # These have to be hardlinks -- symlinks will fail when RAUC goes to generate

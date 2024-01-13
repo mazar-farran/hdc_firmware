@@ -67,7 +67,8 @@ usage()
   exit ${ERROR_USAGE}
 }
 
-PARSED=`getopt --options=hf: --longoptions=help,file: --name "${SCRIPT_NAME}" -- "$@"`
+gnu-getopt=/opt/homebrew/Cellar/gnu-getopt/2.39.3/bin/getopt
+PARSED=`${gnu-getopt} --options=hf: --longoptions=help,file: --name "${SCRIPT_NAME}" -- "$@"`
 eval set -- "$PARSED"
 
 while true; do
