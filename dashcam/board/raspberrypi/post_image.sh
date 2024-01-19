@@ -74,14 +74,14 @@ format=verity
 filename=boot.vfat
 
 [image.rootfs]
-filename=rootfs.squashfs
+filename=rootfs.ext4
 adaptive=block-hash-index
 EOF
 
 # These have to be hardlinks -- symlinks will fail when RAUC goes to generate
 # the signature.
 ln -L ${BINARIES_DIR}/boot.vfat ${BINARIES_DIR}/rauc/boot.vfat
-ln -L ${BINARIES_DIR}/rootfs.squashfs ${BINARIES_DIR}/rauc/rootfs.squashfs
+ln -L ${BINARIES_DIR}/rootfs.ext4 ${BINARIES_DIR}/rauc/rootfs.ext4
 
 ${HOST_DIR}/bin/rauc bundle \
 	--cert ${BOARD_DIR}/pki/dev/keyring/cert.pem \

@@ -23,21 +23,33 @@ fi
 # the overlay filesystem and is screwing up /var so that other processes like RAUC can't
 # write their data, which causes the RAUC daemon to not start.  Sigh, it's just
 # one workaround after another...
-sed -i '/tmpfs \/var tmpfs/d' ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fstab
+sed -i '/tmpfs \/var tmpfs/d' ${BUILD_DIR}/buildroot-fs/ext2/target/etc/fstab
 
 # Mount the data partition.  
-echo "LABEL=data /mnt/data ext4 defaults,data=writeback,noauto,noatime, 0 2" >> ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fstab
-echo "/mnt/data/swapfile none swap defaults 0 0" >> ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/fstab
+echo "LABEL=data /mnt/data ext4 defaults,data=writeback,noauto,noatime, 0 2" >> ${BUILD_DIR}/buildroot-fs/ext2/target/etc/fstab
+echo "/mnt/data/swapfile none swap defaults 0 0" >> ${BUILD_DIR}/buildroot-fs/ext2/target/etc/fstab
 
 # Don't let non-root users see the hostapd.conf file since it has password info.
-chmod og-rw ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/hostapd.conf
+chmod og-rw ${BUILD_DIR}/buildroot-fs/ext2/target/etc/hostapd.conf
 
 if [[ ${IS_DEV} -ne 0 ]]; then
   # Start a console session on the virtual terminal so we can login with
   # keyboard.  Force the link in case it is already there which you can get
   # in weird partial build cases.
-  mkdir -p ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/systemd/system/getty.target.wants/
-  ln -sf /usr/lib/systemd/system/getty@.service ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/systemd/system/getty.target.wants/getty@tty1.service
+  mkdir -p ${BUILD_DIR}/buildroot-fs/ext2/target/etc/systemd/system/getty.target.wants/
+  ln -sf /usr/lib/systemd/system/getty@.service ${BUILD_DIR}/buildroot-fs/ext2/target/etc/systemd/system/getty.target.wants/getty@tty1.service
 else
-  rm -rf ${BUILD_DIR}/buildroot-fs/squashfs/target/etc/systemd/system/getty.target.wants/getty@tty1.service
+  rm -rf ${BUILD_DIR}/buildroot-fs/ext2/target/etc/systemd/system/getty.target.wants/getty@tty1.service
 fi
+
+# # Start a console session on the virtual terminal so we can login with
+# # keyboard.  Force the link in case it is already there which you can get
+# # in weird partial build cases.
+# mkdir -p ${BUILD_DIR}/buildroot-fs/ext2/target/etc/systemd/system/getty.target.wants/
+# ln -sf /usr/lib/systemd/system/getty@.service ${BUILD_DIR}/buildroot-fs/ext2/target/etc/systemd/system/getty.target.wants/getty@tty1.service
+  
+# # Make sure the boot built-in-test runs on start.
+# ln -sf /etc/systemd/system/bootbit.service ${BUILD_DIR}/buildroot-fs/ext2/target/etc/systemd/system/multi-user.target.wants/bootbit.service
+
+# # Mount the data partition.  
+# echo "LABEL=data /mnt/data ext4 defaults,data=journal,noatime 0 0" >> ${BUILD_DIR}/buildroot-fs/ext2/target/etc/fstab
