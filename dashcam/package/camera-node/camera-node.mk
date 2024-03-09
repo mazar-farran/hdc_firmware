@@ -4,17 +4,21 @@
 #
 ################################################################################
 
-CAMERA_NODE_VERSION = 1.0.0
-CAMERA_NODE_SITE = $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-node/files
-CAMERA_NODE_SITE_METHOD = local
-CAMERA_NODE_DEPENDENCIES = nodejs
+CAMERA_NODE_VERSION = 435fc8317ab138ccc8c613295d1db16079db9227
+CAMERA_NODE_SITE = git@github.com:Hivemapper/odc-api.git
+CAMERA_NODE_SITE_METHOD = git
+CAMERA_NODE_DEPENDENCIES = host-nodejs nodejs
+
+define CAMERA_NODE_BUILD_CMDS
+	mkdir -p $(@D)/node_modules
+	$(NPM) install --prefix $(@D)
+	$(NPM) run --prefix $(@D) compile-gh --camera=hdc
+endef
 
 define CAMERA_NODE_INSTALL_TARGET_CMDS
-	#Add your node file to files and replace HELLOWORLD.js with your file's name
-	$(INSTALL) -D -m 644 $(@D)/dashcam-api.js \
+	$(INSTALL) -D -m 644 $(@D)/compiled/dashcam-api.js \
 		$(TARGET_DIR)/opt/dashcam/bin/dashcam-api.js
-	#Uncomment the command below once camera-node.service has been configured appropriately
-	$(INSTALL) -D -m 644 $(@D)/camera-node.service \
+	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-node/files/camera-node.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/camera-node.service
 endef
 
