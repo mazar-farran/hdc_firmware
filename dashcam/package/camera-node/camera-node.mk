@@ -16,7 +16,7 @@ define CAMERA_NODE_BUILD_CMDS
 endef
 
 define CAMERA_NODE_INSTALL_TARGET_CMDS
-	$(INSTALL) -D -m 644 $(@D)/compiled/dashcam-api.js \
+	$(INSTALL) -D -m 644 $(@D)/compiled/odc-api-hdc.js \
 		$(TARGET_DIR)/opt/dashcam/bin/dashcam-api.js
 	$(INSTALL) -D -m 644 $(BR2_EXTERNAL_DASHCAM_PATH)/package/camera-node/files/camera-node.service \
 		$(TARGET_DIR)/usr/lib/systemd/system/camera-node.service
