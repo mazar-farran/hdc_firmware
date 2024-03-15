@@ -25,6 +25,8 @@ define CAMERA_NODE_BUILD_CMDS
 	# modules are pure javascript and are not affected by
 	# --arch.
 	$(NPM_HOST) install --arch=arm64 --prefix $(@D)
+	# temporary until we update odc-api
+	$(NPM_HOST) update --arch=arm64 --prefix $(@D) sqlite3
 	$(NPM_HOST) run --prefix $(@D) compile-gh --camera=hdc
 endef
 
